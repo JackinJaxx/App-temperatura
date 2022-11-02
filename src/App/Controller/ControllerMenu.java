@@ -109,14 +109,20 @@ public class ControllerMenu {
         int j = 0;
         for (int i = -30; i <= 50; i=i+2) {
             images[j] = new ImageIcon("Resources/Images/termometro/termometro_" + i + ".png");
+            images[j].setDescription(String.valueOf(i));
             j++;
         }
         //for every 2 seconds
         Timer timer = new Timer(2000, e -> {
-            double temp = Double.parseDouble(viewMenu.jTTemperatura.getText());
+            int temp = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));
+            if(!(temp % 2 == 0)){
+                temp = temp + 1;
+            }
             System.out.println(temp);
-            if(temp==50){
-                viewMenu.labelTermometro.setIcon(images[40]);
+            for (ImageIcon image : images) {
+                if (image.getDescription().equals(String.valueOf(temp))) {
+                    viewMenu.labelTermometro.setIcon(image);
+                }
             }
         });
         timer.start();
