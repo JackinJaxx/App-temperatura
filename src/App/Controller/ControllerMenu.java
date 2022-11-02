@@ -115,6 +115,7 @@ public class ControllerMenu {
         //for every 2 seconds
         Timer timer = new Timer(2000, e -> {
             int temp = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));
+            temp = temp>=-30 && temp<=50 ? temp : temp< -30 ? -30: 50;
             if(!(temp % 2 == 0)){
                 temp = temp + 1;
             }
