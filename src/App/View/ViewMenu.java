@@ -9,9 +9,8 @@ public class ViewMenu extends JFrame {
 
     private JPanel panelMenu;
     private Font fontPrincipal, fontTitulo,fontComentarios;
-    public JLabel labelGitHub;
-    public JLabel labelTwitter;
-    public JLabel labelTierra;
+    public JLabel labelGitHub, labelTwitter, labelTierra;
+    public JLabel labelButton1, labelButton2;
 
     public ViewMenu() {
         setTitle("Menu");
@@ -52,17 +51,20 @@ public class ViewMenu extends JFrame {
         labelControlTH.setForeground(Color.white);
         panelMenu.add(labelControlTH);
 
-        JLabel labelButton1 = new JLabel();
+        labelButton1 = new JLabel();
         labelButton1.setIcon(new ImageIcon("Resources/Images/buttonMenuActive.png"));
         labelButton1.setBounds(580, 90, labelButton1.getIcon().getIconWidth(), labelButton1.getIcon().getIconHeight());
+        labelButton1.setFocusable(true);
         panelMenu.add(labelButton1);
 
-        JLabel labelButton2 = new JLabel();
+        labelButton2 = new JLabel();
         labelButton2.setIcon(new ImageIcon("Resources/Images/button2MenuActive.png"));
         labelButton2.setBounds(580, 342, labelButton2.getIcon().getIconWidth(), labelButton2.getIcon().getIconHeight());
+        labelButton2.setFocusable(true);
         panelMenu.add(labelButton2);
 
-        //************************************Promociones************************************
+        //************************************Decoraciones************************************
+
 
         labelGitHub = new JLabel();
         labelGitHub.setIcon(new ImageIcon("Resources/Images/github.png"));
@@ -71,13 +73,15 @@ public class ViewMenu extends JFrame {
 
         labelTwitter = new JLabel();
         labelTwitter.setIcon(new ImageIcon("Resources/Images/twitter.png"));
-        labelTwitter.setBounds(4, 195, labelTwitter.getIcon().getIconWidth(), labelTwitter.getIcon().getIconHeight());
+        labelTwitter.setBounds(4, 197, labelTwitter.getIcon().getIconWidth(), labelTwitter.getIcon().getIconHeight());
         panelMenu.add(labelTwitter);
 
         labelTierra = new JLabel();
         labelTierra.setIcon(new ImageIcon("Resources/Images/tierra.png"));
-        labelTierra.setBounds(4, 235, labelTierra.getIcon().getIconWidth(), labelTierra.getIcon().getIconHeight());
+        labelTierra.setBounds(4, 237, labelTierra.getIcon().getIconWidth(), labelTierra.getIcon().getIconHeight());
         panelMenu.add(labelTierra);
+
+        //************************************Fondo************************************
 
         JLabel labelFondo = new JLabel();
         labelFondo.setIcon(new ImageIcon("Resources/Images/fondoMenu.png"));
