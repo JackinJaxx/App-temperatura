@@ -1,6 +1,7 @@
 package App.Controller;
 
 import App.Model.ConnectArduino;
+import App.Model.ModeloSensor;
 import App.View.ViewMenu;
 
 import javax.swing.*;
@@ -14,11 +15,44 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class ControllerMenu {
     private ViewMenu viewMenu;
     ConnectArduino connectArduino;
+
     public ControllerMenu() {
         viewMenu = new ViewMenu();
         connectArduino = new ConnectArduino();
         System.out.println(connectArduino.connect());
         initEvents();
+    }
+
+    public ModeloSensor getSensorData() {
+        return new ModeloSensor(connectArduino.getTemperatura(), connectArduino.getHumedad(), "2021-05-05", "12:00:00");
+    }
+
+    public void eventsTermometro() {
+        ImageIcon[] images = new ImageIcon[41];
+        int j = 0;
+        for (int i = -30; i <= 50; i = i + 2) {
+            images[j] = new ImageIcon("Resources/Images/termometro/termometro_" + i + ".png");
+            images[j].setDescription(String.valueOf(i));
+            j++;
+        }
+        //for every 2 seconds
+        Timer timer = new Timer(2000, e -> {
+            //int temp = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));
+            int temp = Math.round(connectArduino.getTemperatura());
+            viewMenu.jTTemperatura.setText(String.valueOf(connectArduino.getTemperatura()));
+            viewMenu.jTHumedad.setText("Humedad: " + connectArduino.getHumedad() + "%");
+            temp = temp >= -30 && temp <= 50 ? temp : temp < -30 ? -30 : 50;
+            if (!(temp % 2 == 0)) {
+                temp = temp + 1;
+            }
+            System.out.println("Temperatura redondeada: " + temp);
+            for (ImageIcon image : images) {
+                if (image.getDescription().equals(String.valueOf(temp))) {
+                    viewMenu.labelTermometro.setIcon(image);
+                }
+            }
+        });
+        timer.start();
     }
 
     public void initEvents() {
@@ -34,6 +68,7 @@ public class ControllerMenu {
             }
         });
         viewMenu.labelTwitter.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 try {
                     java.awt.Desktop.getDesktop().browse(java.net.URI.create("https://twitter.com/jackinjaxx01"));
@@ -109,31 +144,4 @@ public class ControllerMenu {
         });
     }
 
-    public void eventsTermometro(){
-        ImageIcon[] images = new ImageIcon[41];
-        int j = 0;
-        for (int i = -30; i <= 50; i=i+2) {
-            images[j] = new ImageIcon("Resources/Images/termometro/termometro_" + i + ".png");
-            images[j].setDescription(String.valueOf(i));
-            j++;
-        }
-        //for every 2 seconds
-        Timer timer = new Timer(2000, e -> {
-            //int temp = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));
-            int temp = Math.round(connectArduino.getTemperatura());
-            viewMenu.jTTemperatura.setText(String.valueOf(connectArduino.getTemperatura()));
-            viewMenu.jTHumedad.setText("Humedad: "+connectArduino.getHumedad()+"%");
-            temp = temp>=-30 && temp<=50 ? temp : temp< -30 ? -30: 50;
-            if(!(temp % 2 == 0)){
-                temp = temp + 1;
-            }
-            System.out.println("Temperatura redondeada: "+temp);
-            for (ImageIcon image : images) {
-                if (image.getDescription().equals(String.valueOf(temp))) {
-                    viewMenu.labelTermometro.setIcon(image);
-                }
-            }
-        });
-        timer.start();
-    }
 }
