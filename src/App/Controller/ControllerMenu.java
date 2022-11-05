@@ -28,12 +28,13 @@ public class ControllerMenu {
 
     public ModeloSensor getSensorData() {
         return new ModeloSensor(connectArduino.getTemperatura(), connectArduino.getHumedad(), LocalDate.now().toString(),
-                LocalTime.parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))).toString()
+                LocalTime.parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).toString()
                 );
     }
 
     public void eventsTermometro() {
         AtomicInteger temperaturaVariacion = new AtomicInteger();
+        AtomicInteger humedadVariacion = new AtomicInteger();
         ImageIcon[] images = new ImageIcon[41];
         int j = 0;
         for (int i = -30; i <= 50; i = i + 2) {
@@ -46,23 +47,24 @@ public class ControllerMenu {
             boolean variacion;
             //int temperatura = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));
             int temperatura = Math.round(connectArduino.getTemperatura());
+            int humedad = Math.round(connectArduino.getHumedad());
             viewMenu.jTTemperatura.setText(String.valueOf(connectArduino.getTemperatura()));
             viewMenu.jTHumedad.setText("Humedad: " + connectArduino.getHumedad() + "%");
             temperatura = temperatura >= -30 && temperatura <= 50 ? temperatura : temperatura < -30 ? -30 : 50;
             if (!(temperatura % 2 == 0)) {
                 temperatura = temperatura + 1;
             }
-            System.out.println("Temperatura redondeada: " + temperatura);
             for (ImageIcon image : images) {
                 if (image.getDescription().equals(String.valueOf(temperatura))) {
                     viewMenu.labelTermometro.setIcon(image);
                 }
             }
-            variacion = temperatura != temperaturaVariacion.get();
+            variacion = temperatura != temperaturaVariacion.get() || humedad != humedadVariacion.get();
             if(variacion){
                 //si la temperaturaVariacion cambia se guarda en la base de datos
-                CRUDSensor.getInstance().insert(getSensorData());
+                System.out.println("\n"+CRUDSensor.getInstance().insert(getSensorData()));
                 temperaturaVariacion.set(temperatura);
+                humedadVariacion.set(humedad);
             }
         });
         timer.start();

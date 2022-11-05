@@ -24,8 +24,8 @@ public class CRUDSensor implements CRUD{
         ConnectDB.getInstance().connectDatabase();
         try {
             Statement st = ConnectDB.getInstance().getConnection().createStatement();
-            st.executeUpdate("" +
-                    "");
+            st.executeUpdate("INSERT INTO temperatura VALUES ('"+sensor.getFecha()+"','"+sensor.getHora()+"','"+sensor.getTemperatura()+"')");
+            st.executeUpdate("INSERT INTO humedad VALUES ('"+sensor.getFecha()+"','"+sensor.getHora()+"','"+sensor.getHumedad()+"')");
         } catch (PSQLException ew) {
             return ew.getMessage();
         } catch (SQLException e) {

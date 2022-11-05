@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class ConnectDB {
     //connectDatabase postgresql
-    private final String url = "jdbc:postgresql://localhost:5432/termometro";
+    private final String url = "jdbc:postgresql://localhost:5432/termometro"; //aca se pone el nombre de la base de datos
     private final String user = "postgres";
     private final String password = "alejandro1807"; //contraseña de postgres
     private static ConnectDB instance;
