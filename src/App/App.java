@@ -8,8 +8,5 @@ public class App {
     public static void main(String[] args) {
         Runnable runApplication = () -> new ControllerMenu();
         SwingUtilities.invokeLater(runApplication);
-        System.out.println("Application started");
-        System.out.println("soy yo");
-        System.out.println("holaguicho");
     }
 }
