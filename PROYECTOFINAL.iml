@@ -10,5 +10,6 @@
     <orderEntry type="library" name="jcalendar-1.4" level="project" />
     <orderEntry type="library" name="PanamaHitek_Arduino-3.2.0" level="project" />
     <orderEntry type="library" name="jssc-2.9.4" level="project" />
+    <orderEntry type="library" name="postgresql-42.5.0" level="project" />
   </component>
 </module>

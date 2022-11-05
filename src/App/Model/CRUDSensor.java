@@ -1,6 +1,12 @@
 package App.Model;
 
+import org.postgresql.util.PSQLException;
+
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CRUDSensor implements CRUD{
     static CRUDSensor instance;
@@ -13,8 +19,19 @@ public class CRUDSensor implements CRUD{
         return instance;
     }
     @Override
-    public int insert(Object model) {
-        return 0;
+    public String insert(Object model) {
+        ModeloSensor sensor = (ModeloSensor) model;
+        ConnectDB.getInstance().connectDatabase();
+        try {
+            Statement st = ConnectDB.getInstance().getConnection().createStatement();
+            st.executeUpdate("" +
+                    "");
+        } catch (PSQLException ew) {
+            return ew.getMessage();
+        } catch (SQLException e) {
+            Logger.getLogger(ModeloSensor.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return "Los datos se han insertado correctamente!!";
     }
 
     @Override
