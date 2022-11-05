@@ -10,6 +10,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ControllerMenu {
@@ -24,7 +27,9 @@ public class ControllerMenu {
     }
 
     public ModeloSensor getSensorData() {
-        return new ModeloSensor(connectArduino.getTemperatura(), connectArduino.getHumedad(), "2021-05-05", "12:00:00");
+        return new ModeloSensor(connectArduino.getTemperatura(), connectArduino.getHumedad(), LocalDate.now().toString(),
+                LocalTime.parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))).toString()
+                );
     }
 
     public void eventsTermometro() {
