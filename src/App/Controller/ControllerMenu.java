@@ -10,6 +10,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ControllerMenu {
     private ViewMenu viewMenu;
@@ -27,6 +28,7 @@ public class ControllerMenu {
     }
 
     public void eventsTermometro() {
+        AtomicInteger temperaturaVariacion = new AtomicInteger();
         ImageIcon[] images = new ImageIcon[41];
         int j = 0;
         for (int i = -30; i <= 50; i = i + 2) {
@@ -36,27 +38,26 @@ public class ControllerMenu {
         }
         //for every 2 seconds
         Timer timer = new Timer(2000, e -> {
-            int temperatura = 0;
             boolean variacion;
-            //int tempTemporal = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));
-            int tempTemporal = Math.round(connectArduino.getTemperatura());
+            //int temperatura = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));
+            int temperatura = Math.round(connectArduino.getTemperatura());
             viewMenu.jTTemperatura.setText(String.valueOf(connectArduino.getTemperatura()));
             viewMenu.jTHumedad.setText("Humedad: " + connectArduino.getHumedad() + "%");
-            tempTemporal = tempTemporal >= -30 && tempTemporal <= 50 ? tempTemporal : tempTemporal < -30 ? -30 : 50;
-            if (!(tempTemporal % 2 == 0)) {
-                tempTemporal = tempTemporal + 1;
+            temperatura = temperatura >= -30 && temperatura <= 50 ? temperatura : temperatura < -30 ? -30 : 50;
+            if (!(temperatura % 2 == 0)) {
+                temperatura = temperatura + 1;
             }
-            System.out.println("Temperatura redondeada: " + tempTemporal);
+            System.out.println("Temperatura redondeada: " + temperatura);
             for (ImageIcon image : images) {
-                if (image.getDescription().equals(String.valueOf(tempTemporal))) {
+                if (image.getDescription().equals(String.valueOf(temperatura))) {
                     viewMenu.labelTermometro.setIcon(image);
                 }
             }
-            variacion = tempTemporal != temperatura;
+            variacion = temperatura != temperaturaVariacion.get();
             if(variacion){
-                //si la temperatura cambia se guarda en la base de datos
-                new CRUDSensor().insert(getSensorData());
-                temperatura = tempTemporal;
+                //si la temperaturaVariacion cambia se guarda en la base de datos
+                CRUDSensor.getInstance().insert(getSensorData());
+                temperaturaVariacion.set(temperatura);
             }
         });
         timer.start();

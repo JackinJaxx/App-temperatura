@@ -3,6 +3,15 @@ package App.Model;
 import java.util.ArrayList;
 
 public class CRUDSensor implements CRUD{
+    static CRUDSensor instance;
+    private CRUDSensor() {
+    }
+    static public CRUDSensor getInstance(){
+        if(instance == null){
+            instance = new CRUDSensor();
+        }
+        return instance;
+    }
     @Override
     public int insert(Object model) {
         return 0;
