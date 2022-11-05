@@ -9,5 +9,6 @@ public class App {
         Runnable runApplication = () -> new ControllerMenu();
         SwingUtilities.invokeLater(runApplication);
         System.out.println("Application started");
+        System.out.println("soy yo");
     }
 }
