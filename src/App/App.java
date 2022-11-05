@@ -10,5 +10,6 @@ public class App {
         SwingUtilities.invokeLater(runApplication);
         System.out.println("Application started");
         System.out.println("soy yo");
+        System.out.println("holaguicho");
     }
 }
