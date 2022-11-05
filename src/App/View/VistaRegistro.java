@@ -4,19 +4,32 @@
  */
 package App.View;
 
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  *
  * @author EQUIPO
  */
 public class VistaRegistro extends javax.swing.JFrame {
 
+    private LocalDate fecha; //Fecha actual
+    private LocalTime hora; //Hora actual
+    private Date fecha2;//fecha para mostrar al principio del JDateChooser
     /**
      * Creates new form vista_registroejemplo
      */
     public VistaRegistro() {
+        fecha = LocalDate.now(); //Fecha actual
+        hora = LocalTime.parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))); //Hora actual CON formato HH:MM asi nos evitamos de poner segundos
+        fecha2 = Date.from(fecha.atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant()); //conversion de LocalDate a Date para el JDateChooser
+        System.out.println(fecha);
+        System.out.println(hora);
         initComponents();
-        
-   
     }
 
     /**
@@ -36,7 +49,7 @@ public class VistaRegistro extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser(fecha2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
