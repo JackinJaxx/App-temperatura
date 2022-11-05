@@ -15,21 +15,24 @@ public class ConnectArduino {
 
     private String port = "COM4"; //aca se pondra el puerto al que esta conectada tu computadora
 
+    private float temperatura;
+    private float humedad;
+
+
     public ConnectArduino() {
         ino = new PanamaHitek_Arduino();
         multi = new PanamaHitek_MultiMessage(2, ino);
-        listener = new SerialPortEventListener() {
-            @Override
-            public void serialEvent(SerialPortEvent serialPortEvent) {
-                try {
-                    if (multi.dataReceptionCompleted()) {
-                        System.out.println(multi.getMessage(0));
-                        System.out.println(multi.getMessage(1));
-                        multi.flushBuffer();
-                    }
-                } catch (ArduinoException | SerialPortException e) {
-                    throw new RuntimeException(e);
+        listener = serialPortEvent -> {
+            try {
+                if (multi.dataReceptionCompleted()) {
+                    temperatura = Float.parseFloat(multi.getMessage(0));
+                    humedad = Float.parseFloat(multi.getMessage(1));
+                    System.out.println("temperatura en arduino: "+multi.getMessage(0));
+                    System.out.println("humedad en arduino: "+multi.getMessage(1));
+                    multi.flushBuffer();
                 }
+            } catch (ArduinoException | SerialPortException e) {
+                throw new RuntimeException(e);
             }
         };
     }
@@ -42,8 +45,11 @@ public class ConnectArduino {
         return "Puerto "+port+ " conectado";
     }
 
-    public static void main(String[] args) {
-        ConnectArduino connectArduino = new ConnectArduino();
-        System.out.println(connectArduino.connect());
+    public float getTemperatura() {
+        return temperatura;
+    }
+
+    public float getHumedad() {
+        return humedad;
     }
 }

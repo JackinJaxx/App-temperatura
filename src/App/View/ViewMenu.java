@@ -106,7 +106,7 @@ public class ViewMenu extends JFrame {
 
     public void createJtextFields() {
         jTTemperatura = new JTextField();
-        jTTemperatura.setText("10.9");
+
         jTTemperatura.setFont(fontPrincipal);
         jTTemperatura.setOpaque(false);
         jTTemperatura.setBorder(null);
@@ -116,7 +116,7 @@ public class ViewMenu extends JFrame {
         panelMenu.add(jTTemperatura);
 
         jTHumedad = new JTextField();
-        jTHumedad.setText("Humedad: 10%");
+
         jTHumedad.setFont(fontPrincipal2);
         jTHumedad.setOpaque(false);
         jTHumedad.setBorder(null);
