@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CRUDSensor implements CRUD{
-    static CRUDSensor instance;
-    private CRUDSensor() {
+public class CRUDDB implements CRUD{
+    static CRUDDB instance;
+    private CRUDDB() {
     }
-    static public CRUDSensor getInstance(){
+    static public CRUDDB getInstance(){
         if(instance == null){
-            instance = new CRUDSensor();
+            instance = new CRUDDB();
         }
         return instance;
     }

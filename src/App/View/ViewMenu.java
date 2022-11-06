@@ -55,7 +55,7 @@ public class ViewMenu extends JFrame {
         panelMenu.add(labelControlTH);
 
         labelTermometro = new JLabel();
-        labelTermometro.setIcon(new ImageIcon("Resources/Images/termometro/termometro_-30.png"));
+        labelTermometro.setIcon(new ImageIcon("Resources/Images/termometro/termometro_30.png"));
         labelTermometro.setBounds(100, 140, labelTermometro.getIcon().getIconWidth(), labelTermometro.getIcon().getIconHeight());
         panelMenu.add(labelTermometro);
 
@@ -106,17 +106,18 @@ public class ViewMenu extends JFrame {
 
     public void createJtextFields() {
         jTTemperatura = new JTextField();
-
+        jTTemperatura.setText("30.0");
         jTTemperatura.setFont(fontPrincipal);
         jTTemperatura.setOpaque(false);
         jTTemperatura.setBorder(null);
         jTTemperatura.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         //jTTemperatura.setFocusable(false);
         jTTemperatura.setBounds(270, 300, 84, 48);
+
         panelMenu.add(jTTemperatura);
 
         jTHumedad = new JTextField();
-
+        jTHumedad.setText("Humedad: 60.0%");
         jTHumedad.setFont(fontPrincipal2);
         jTHumedad.setOpaque(false);
         jTHumedad.setBorder(null);

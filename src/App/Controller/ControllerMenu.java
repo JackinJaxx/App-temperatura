@@ -1,8 +1,8 @@
 package App.Controller;
 
-import App.Model.CRUDSensor;
-import App.Model.ConnectArduino;
+import App.Model.CRUDDB;
 import App.Model.ModeloSensor;
+import App.Model.ReadArduino;
 import App.View.ViewMenu;
 
 import javax.swing.*;
@@ -17,22 +17,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ControllerMenu {
     private ViewMenu viewMenu;
-    ConnectArduino connectArduino;
+    private ReadArduino readArduino;
 
     public ControllerMenu() {
         viewMenu = new ViewMenu();
-        connectArduino = new ConnectArduino();
-        System.out.println(connectArduino.connect());
+        readArduino = new ReadArduino();
         initEvents();
     }
 
-    public ModeloSensor getSensorData() {
-        return new ModeloSensor(connectArduino.getTemperatura(), connectArduino.getHumedad(), LocalDate.now().toString(),
-                LocalTime.parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).toString()
-                );
-    }
-
-    public void eventsTermometro() {
+    public void actualizaTermometro() {
         AtomicInteger temperaturaVariacion = new AtomicInteger();
         AtomicInteger humedadVariacion = new AtomicInteger();
         ImageIcon[] images = new ImageIcon[41];
@@ -45,11 +38,12 @@ public class ControllerMenu {
         //for every 2 seconds
         Timer timer = new Timer(2000, e -> {
             boolean variacion;
-            //int temperatura = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));
-            int temperatura = Math.round(connectArduino.getTemperatura());
-            int humedad = Math.round(connectArduino.getHumedad());
-            viewMenu.jTTemperatura.setText(String.valueOf(connectArduino.getTemperatura()));
-            viewMenu.jTHumedad.setText("Humedad: " + connectArduino.getHumedad() + "%");
+            int temperatura = Math.round((float) readArduino.select().get(0));
+            int humedad = Math.round((float) readArduino.select().get(1));
+
+            viewMenu.jTTemperatura.setText(String.valueOf(readArduino.select().get(0)));
+            viewMenu.jTHumedad.setText("Humedad: " + readArduino.select().get(1) + "%");
+
             temperatura = temperatura >= -30 && temperatura <= 50 ? temperatura : temperatura < -30 ? -30 : 50;
             if (!(temperatura % 2 == 0)) {
                 temperatura = temperatura + 1;
@@ -60,9 +54,9 @@ public class ControllerMenu {
                 }
             }
             variacion = temperatura != temperaturaVariacion.get() || humedad != humedadVariacion.get();
-            if(variacion){
+            if (variacion) {
                 //si la temperaturaVariacion cambia se guarda en la base de datos
-                System.out.println("\n"+CRUDSensor.getInstance().insert(getSensorData()));
+                System.out.println("\n" + CRUDDB.getInstance().insert(getSensorData(temperatura, humedad)));
                 temperaturaVariacion.set(temperatura);
                 humedadVariacion.set(humedad);
             }
@@ -70,8 +64,14 @@ public class ControllerMenu {
         timer.start();
     }
 
+    public ModeloSensor getSensorData(int temperatura, int humedad) {
+        return new ModeloSensor(temperatura, humedad, LocalDate.now().toString(),
+                LocalTime.parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).toString()
+        );
+    }
+
     public void initEvents() {
-        eventsTermometro();
+        actualizaTermometro();
         eventsLabelButtons();
         viewMenu.labelGitHub.addMouseListener(new MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -95,7 +95,7 @@ public class ControllerMenu {
     }
 
     public void eventsLabelButtons() {
-        viewMenu.labelButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        viewMenu.labelButton1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 viewMenu.labelButton1.setIcon(new ImageIcon("Resources/Images/buttonMenuHover.png"));
