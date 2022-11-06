@@ -2,20 +2,20 @@ package App.Model;
 
 import java.util.ArrayList;
 
-public class ReadArduino implements CRUD{
+public class ReadArduino implements CRUD {
     private ConnectArduino connectArduino;
     public ReadArduino() {
         connectArduino = new ConnectArduino();
         System.out.println(connectArduino.connect());
     }
+
     @Override
     public ArrayList<Object> select() {
-        ArrayList<Object> list = new ArrayList<>();
-        //int temperatura = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));
-        float temperatura = connectArduino.getTemperatura();
-        list.add(temperatura);
-        float humedad = connectArduino.getHumedad();
-        list.add(humedad);
+        ArrayList<Object> list = new ArrayList<>(); //posicion 0 la temperatura, posicion 1 la humedad
+        //int temperatura = Math.round(Float.parseFloat((viewMenu.jTTemperatura.getText())));;
+        list.add(connectArduino.getTemperatura());
+        list.add(connectArduino.getHumedad());
+
         return list;
     }
     @Override

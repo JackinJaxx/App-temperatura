@@ -20,14 +20,15 @@ public class ControllerMenu {
     private ReadArduino readArduino;
 
     public ControllerMenu() {
-        viewMenu = new ViewMenu();
+        viewMenu = new ViewMenu();//instancia la vistaMenu
         readArduino = new ReadArduino();
         initEvents();
     }
 
     public void actualizaTermometro() {
-        AtomicInteger temperaturaVariacion = new AtomicInteger();
-        AtomicInteger humedadVariacion = new AtomicInteger();
+        AtomicInteger temperaturaVariacion = new AtomicInteger();//
+        AtomicInteger humedadVariacion = new AtomicInteger();//
+
         ImageIcon[] images = new ImageIcon[41];
         int j = 0;
         for (int i = -30; i <= 50; i = i + 2) {
@@ -35,28 +36,32 @@ public class ControllerMenu {
             images[j].setDescription(String.valueOf(i));
             j++;
         }
-        //for every 2 seconds
+
+        //esto pasa cada 2 segundos
         Timer timer = new Timer(2000, e -> {
-            boolean variacion;
-            int temperatura = Math.round((float) readArduino.select().get(0));
-            int humedad = Math.round((float) readArduino.select().get(1));
+            boolean variacion;//si es true significa que la temperatura ha variado
+            //0.5 0, 0.6 1
+            int temperatura = Math.round((float)readArduino.select().get(0));//temperatura redondeada
+            int humedad = Math.round((float) readArduino.select().get(1)); //humedad redonedada
 
             viewMenu.jTTemperatura.setText(String.valueOf(readArduino.select().get(0)));
             viewMenu.jTHumedad.setText("Humedad: " + readArduino.select().get(1) + "%");
 
-            temperatura = temperatura >= -30 && temperatura <= 50 ? temperatura : temperatura < -30 ? -30 : 50;
+            //temperatura = temperatura >= -30 && temperatura <= 50 ? temperatura : temperatura < -30 ? -30 : 50;
             if (!(temperatura % 2 == 0)) {
                 temperatura = temperatura + 1;
             }
-            for (ImageIcon image : images) {
+            for (ImageIcon image : images) {//esto pone el valor de la imagen correspondiente a la temperatura
                 if (image.getDescription().equals(String.valueOf(temperatura))) {
                     viewMenu.labelTermometro.setIcon(image);
                 }
             }
-            variacion = temperatura != temperaturaVariacion.get() || humedad != humedadVariacion.get();
+            //**hasta aca termina el control del terometro en la vistaMenu
+
+            variacion = temperatura != temperaturaVariacion.get() || humedad != humedadVariacion.get();//
             if (variacion) {
                 //si la temperaturaVariacion cambia se guarda en la base de datos
-                System.out.println("\n" + CRUDDB.getInstance().insert(getSensorData(temperatura, humedad)));
+                System.out.println("\n" + CRUDDB.getInstance().insert(getSensorData(temperatura, humedad)));//manda ala bd
                 temperaturaVariacion.set(temperatura);
                 humedadVariacion.set(humedad);
             }
@@ -71,7 +76,7 @@ public class ControllerMenu {
     }
 
     public void initEvents() {
-        actualizaTermometro();
+        actualizaTermometro();//tiene la logica para pedir datos cada 2 segundos y actualizar la imagen correspondiente
         eventsLabelButtons();
         viewMenu.labelGitHub.addMouseListener(new MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
