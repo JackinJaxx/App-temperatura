@@ -70,7 +70,8 @@ public class JPanelTemperature extends javax.swing.JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-
+        
+        //Aqui sacamos lo artistico
         controller.paintCartesian(g);
         if (function == null) {
             controller.paintGraphic(g);
