@@ -1,15 +1,14 @@
-package com.sensor.app.models;
+package App.Model;
 
-public class ModelTemperatura {
-
+public class ModelHumedad {
     private String fecha;
     private String hora;
-    private float temperatura;
+    private float humedad;
 
-    public ModelTemperatura(String fecha, String hora, float temperatura) {
+    public ModelHumedad(String fecha, String hora, float humedad) {
         this.fecha = fecha;
         this.hora = hora;
-        this.temperatura = temperatura;
+        this.humedad = humedad;
     }
 
     public String getFecha() {
@@ -28,11 +27,11 @@ public class ModelTemperatura {
         this.hora = hora;
     }
 
-    public float getTemperatura() {
-        return temperatura;
+    public float getHumedad() {
+        return humedad;
     }
 
-    public void setTemperatura(float temperatura) {
-        this.temperatura = temperatura;
+    public void setHumedad(float humedad) {
+        this.humedad = humedad;
     }
 }
