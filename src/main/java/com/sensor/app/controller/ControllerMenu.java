@@ -13,6 +13,13 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * Clase que se encarga de controlar la vista del menu
+ *
+ * @author KevinCyndaquil, JackinJaxx, Wuicho24
+ * @version 1.0
+ * @see ViewMenu
+ */
 public final class ControllerMenu {
 
     private final ViewMenu viewMenu;
@@ -20,6 +27,10 @@ public final class ControllerMenu {
     private ControllerGraphics viewTemperature;
     private ControllerGraphics viewHumidity;
 
+    /**
+     * Constructor de la clase.Esta instancia la vista del menu
+     * @see ViewMenu
+     */
     public ControllerMenu() {
         try {
             Thread.sleep(500);
@@ -30,6 +41,11 @@ public final class ControllerMenu {
         initEvents();
     }
 
+    /**
+     * Metodo que se encarga de actualizar el termometro que esta en la vista dependiendo del ultimo valor en la base de datos
+     * @see CRUDTemperatura
+     * @see CRUDHumedad
+     */
     public void actualizaTermometro() {
         ImageIcon[] images = new ImageIcon[41];
         CRUDTemperatura crudT = CRUDTemperatura.getInstance();
@@ -43,10 +59,9 @@ public final class ControllerMenu {
         }
 
         //esto pasa cada 2 segundos
-        Timer timer = new Timer(2000,e ->{
+        Timer timer = new Timer(1500,e ->{
             Temperature t;
             float temperatura;
-            
             Humidity h;
             float humedad;
             
@@ -75,10 +90,17 @@ public final class ControllerMenu {
         timer.start();
     }
 
-    
 
+    /**
+     * Metodo que se encarga de inicializar los eventos de la vista
+     * @see ViewMenu
+     * @see ControllerMenu#actualizaTermometro()
+     * @see ControllerMenu#eventsLabelButtons()
+     * @see ControllerRegistros
+     * @see ControllerGraphics
+     */
     public void initEvents() {
-        actualizaTermometro();//tiene la logica para pedir datos cada 2 segundos y actualizar la imagen correspondiente
+        actualizaTermometro();//tiene la logica para pedir datos cada 1.5 segundos y actualizar la imagen correspondiente
         eventsLabelButtons();
         
         viewMenu.labelGitHub.addMouseListener(new MouseAdapter() {
@@ -102,6 +124,12 @@ public final class ControllerMenu {
         });
     }
 
+    /**
+     * Metodo que se encarga de inicializar los eventos de los labels y botones de la vista
+     * @see ViewMenu
+     * @see ControllerRegistros
+     * @see ControllerGraphics
+     */
     public void eventsLabelButtons() {
         viewMenu.labelButton1.addMouseListener(new MouseAdapter() {
             @Override

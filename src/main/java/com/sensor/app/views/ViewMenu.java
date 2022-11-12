@@ -138,4 +138,5 @@ public final class ViewMenu extends JFrame {
         fontTitulo = new Font("Roboto Black", Font.PLAIN, 25);
         fontComentarios = new Font("Cascadia Code", Font.PLAIN, 20);
     }
+
 }

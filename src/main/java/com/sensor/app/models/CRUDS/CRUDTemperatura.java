@@ -13,61 +13,61 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+/**
+ * Clase que se encarga de hacer las operaciones de la tabla Temperatura
+ * @version 1.0
+ * @author KevinCyndaquil, JackinJaxx, Wuicho24
+ */
 public class CRUDTemperatura extends CRUDAdapter {
-    
+
     public static CRUDTemperatura instance;
     private final ConnectDB connectDB;
     private final Connection connection;
-    
+
     private Statement st;
     private ResultSet result;
-    
+
+    /**
+     * Constructor de la clase
+     * @see ConnectDB
+     */
     private CRUDTemperatura() {
         connectDB = new ConnectDB();
         connectDB.connectDatabase();
         connection = connectDB.getConnection();
     }
-    
-    static public CRUDTemperatura getInstance(){
-        if(instance == null){
+
+    /**
+     * Metodo que se encarga de crear una instancia de la clase
+     * @return CRUDTemperatura
+     */
+    static public CRUDTemperatura getInstance() {
+        if (instance == null) {
             instance = new CRUDTemperatura();
         }
         return instance;
     }
-    
+
     @Override
     public String insert(Object model) {
         Temperature modelo = (Temperature) model;
-        
+
         String fecha = modelo.getDate().getYear() + "/" + modelo.getDate().getMonthValue() + "/" + modelo.getDate().getDayOfMonth();
         String hora = modelo.getDate().getHour() + ":" + modelo.getDate().getMinute() + ":" + modelo.getDate().getSecond();
-        String sql = "INSERT INTO temperatura VALUES ('" + 
+        String sql = "INSERT INTO temperatura VALUES ('" +
                 fecha + "','" +
                 hora + "'," +
                 modelo.getCelsius() + ")";
-        
+
         try {
             st = connection.createStatement();
             st.executeUpdate(sql);
-            //st.close();
-            //connection.close();
         } catch (PSQLException ew) {
             return ew.getMessage();
         } catch (SQLException e) {
             Logger.getLogger(Temperature.class.getName()).log(Level.SEVERE, null, e);
         }
         return "\n**TEMPERATURA CREADA**\n";
-    }
-
-    @Override
-    public int update(Object model) {
-        return 0;
-    }
-
-    @Override
-    public int delete(Object primaryKey) {
-        return 0;
     }
 
     @Override
@@ -81,19 +81,16 @@ public class CRUDTemperatura extends CRUDAdapter {
                         result.getFloat(3),
                         LocalDateTime.parse(result.getString(1) + "T" + result.getString(2)));
             }
-            //st.close();
-            //result.close();
-            //connection.close();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return (Object) modelo;
+        return modelo;
     }
 
     @Override
     public ArrayList<Object> selectAll() {
         ArrayList<Temperature> listTemperatura = new ArrayList<>();
-        
         try {
             st = connection.createStatement();
             result = st.executeQuery("SELECT * FROM temperatura");
@@ -104,10 +101,21 @@ public class CRUDTemperatura extends CRUDAdapter {
             }
             st.close();
             result.close();
-            //connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return new ArrayList <>(listTemperatura);
+        return new ArrayList<>(listTemperatura);
     }
+
+    @Override
+    public int update(Object model) {
+        return 0;
+    }
+
+    @Override
+    public int delete(Object primaryKey) {
+        return 0;
+    }
+
+
 }

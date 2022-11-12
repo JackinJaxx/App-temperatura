@@ -14,9 +14,13 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
+/**
+ * Clase que se encarga de controlar la vista Registros
+ *
+ * @author KevinCyndaquil, JackinJaxx, Wuicho24
+ * @version 1.0
+ */
 public final class ControllerRegistros {
-
     public static ControllerRegistros instance;
     
     private final VistaRegistro vistaRegistro;
@@ -28,8 +32,11 @@ public final class ControllerRegistros {
     private ControllerGraphics viewTemperature;
     private ControllerGraphics viewHumidity;
     private LocalDate fechaC;
-    
 
+
+    /**
+     * Constructor de la clase.Esta instancia la vista Registros
+     */
     public ControllerRegistros() {
         vistaRegistro = new VistaRegistro();
         crudH = CRUDHumedad.getInstance();
@@ -39,6 +46,10 @@ public final class ControllerRegistros {
         events();
     }
 
+    /**
+     * Metodo que implementa el patron singleton para que solo exista una instancia de esta clase
+     * @return la instancia de la clase
+     */
     public static ControllerRegistros getInstance() {
         if (instance == null) {
             instance = new ControllerRegistros();
@@ -46,11 +57,17 @@ public final class ControllerRegistros {
         return instance;
     }
 
+    /**
+     * Metodo que se encarga de mostrar la vista
+     */
     public void showView() {
         vistaRegistro.setVisible(true);
         agregarDatosTabla();
     }
 
+    /**
+     * Metodo que se encarga de agregar los datos de la base de datos a las tablas
+     */
     public void agregarDatosTabla() {
         tablaT.setRowCount(0);
         //System.out.println(LocalDate.now());
@@ -77,6 +94,9 @@ public final class ControllerRegistros {
         }
     }
 
+    /**
+     * Metodo que se encarga de agregar los eventos a los componentes de la vista Registros
+     */
     public void events() {
         vistaRegistro.getjDateChooser1().getDateEditor().addPropertyChangeListener((PropertyChangeEvent evt) -> {
             if ("date".equals(evt.getPropertyName())) {

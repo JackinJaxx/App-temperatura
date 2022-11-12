@@ -6,17 +6,26 @@ import com.panamahitek.PanamaHitek_MultiMessage;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
-
+/**
+ * Clase que se encarga de conectarse al arduino
+ * @version 1.0
+ * @author KevinCyndaquil, JackinJaxx, Wuicho24
+ */
 public class ConnectArduino {
-
     private final PanamaHitek_Arduino ino;
     private final SerialPortEventListener listener;
     private PanamaHitek_MultiMessage multi;
-
-    private final String port = "COM16"; //aca se pondra el puerto al que esta conectada tu computadora
+    private final String port = "COM4"; //aca se pondra el puerto al que esta conectada tu computadora
     private float temperatura;
     private float humedad;
 
+    /**
+     * Constructor de la clase
+     * @see PanamaHitek_Arduino
+     * @see SerialPortEventListener
+     * @see PanamaHitek_MultiMessage
+     * @see SerialPortEvent
+     */
     public ConnectArduino() {
         ino = new PanamaHitek_Arduino();
         multi = new PanamaHitek_MultiMessage(2, ino);
@@ -33,6 +42,10 @@ public class ConnectArduino {
         };
     }
 
+    /**
+     * Metodo que se encarga de conectarse al arduino mediante el puerto
+     * @return String Puerto " + port + " conectado ||   Error al conectar Arduino
+     */
     public String connect() {
         try {
             ino.arduinoRX(port, 9600, listener);
@@ -47,10 +60,18 @@ public class ConnectArduino {
         obj.connect();
     }
 
+    /**
+     * Metodo getter de la temperatura
+     * @return float temperatura
+     */
     public float getTemperatura() {
         return temperatura;
     }
 
+    /**
+     * Metodo getter de la humedad
+     * @return float humedad
+     */
     public float getHumedad() {
         return humedad;
     }

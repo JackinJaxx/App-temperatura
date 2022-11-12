@@ -13,7 +13,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+/**
+ * Clase que se encarga de hacer las operaciones de la tabla Humedad
+ * @version 1.0
+ * @author KevinCyndaquil, JackinJaxx, Wuicho24
+ */
 public class CRUDHumedad extends CRUDAdapter {
 
     public static CRUDHumedad instance;
@@ -23,12 +27,20 @@ public class CRUDHumedad extends CRUDAdapter {
     private Statement st;
     private ResultSet result;
 
-    public CRUDHumedad() {
+    /**
+     * Constructor de la clase
+     * @see ConnectDB
+     */
+    private CRUDHumedad() {
         connectDB = new ConnectDB();
         connectDB.connectDatabase();
         connection = connectDB.getConnection();
     }
 
+    /**
+     * Metodo que se encarga de crear una instancia de la clase
+     * @return CRUDHumedad
+     */
     static public CRUDHumedad getInstance() {
         if (instance == null) {
             instance = new CRUDHumedad();
@@ -50,8 +62,6 @@ public class CRUDHumedad extends CRUDAdapter {
         try {
             st = connection.createStatement();
             st.executeQuery(sql);
-            //st.close();
-            //connection.close();
         } catch (PSQLException ew) {
             return ew.getMessage();
         } catch (SQLException e) {
@@ -81,14 +91,11 @@ public class CRUDHumedad extends CRUDAdapter {
                         Integer.parseInt(result.getString(3)),
                         LocalDateTime.parse(result.getString(1) + "T" + result.getString(2)));
             }
-            //st.close();
-            //result.close();
-            //connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return (Object) modelo;
+        return modelo;
     }
 
     @Override
@@ -103,9 +110,6 @@ public class CRUDHumedad extends CRUDAdapter {
                         Integer.parseInt(result.getString(3)),
                         LocalDateTime.parse(result.getString(1) + "T" + result.getString(2))));
             }
-            //st.close();
-            //result.close();
-            //connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
