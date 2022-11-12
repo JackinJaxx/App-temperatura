@@ -1,4 +1,4 @@
-package App.Model.Interfaces;
+package com.sensor.app.models.Interfaces;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public abstract class CRUDAdapter implements Select, Delete, Update, Insert {
     }
 
     @Override
-    public ArrayList<Object> selectLast() {
+    public Object selectLast() {
         return null;
     }
 

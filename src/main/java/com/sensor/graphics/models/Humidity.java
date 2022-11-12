@@ -13,25 +13,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Humidity {
 
-    private Integer id;
     private final AtomicInteger percentage;
     private LocalDateTime date;
 
-    public static final int MAX= 90;
+    public static final int MAX = 90;
     public static final int MIN = 20;
     public static final int RANGE = MAX - MIN;
-    
+
     public Integer x;
     public Integer y;
-    
-    public Humidity(Integer id, int percentage, LocalDateTime date) {
-        this.id = id;
+
+    public Humidity(int percentage, LocalDateTime date) {
         this.percentage = new AtomicInteger(percentage);
         this.date = date;
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public AtomicInteger getPercentage() {
@@ -40,10 +34,6 @@ public class Humidity {
 
     public LocalDateTime getDate() {
         return date;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public void setPercentage(int percentage) {

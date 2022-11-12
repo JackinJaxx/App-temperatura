@@ -1,30 +1,26 @@
-package App.Model.Threads;
+package com.sensor.app.models.Threads;
 
-import App.Model.CRUDS.CRUDHumedad;
-import App.Model.CRUDS.CRUDTemperatura;
-import App.Model.ModelHumedad;
-import App.Model.ModelTemperatura;
-import App.Model.ReadArduino;
-
-import javax.swing.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import com.sensor.app.models.CRUDS.CRUDHumedad;
+import com.sensor.app.models.CRUDS.CRUDTemperatura;
+import com.sensor.app.models.ReadArduino;
+import com.sensor.graphics.models.Humidity;
+import com.sensor.graphics.models.Temperature;
+import java.time.LocalDateTime;
 
 public class HiloConnectArduinoDB extends Thread {
-    ReadArduino readArduino;
-    CRUDTemperatura crudT;
-    CRUDHumedad crudH;
-    float temperatura;
-    float humedad;
-    ModelTemperatura modelTemperatura;
-    float temperaturaVariacion;
-    ModelHumedad modelHumedad;
-    float humeadadVariacion;
 
-    static Timer timer;
-    public HiloConnectArduinoDB(){
+    private final ReadArduino readArduino;
+    private final CRUDTemperatura crudT;
+    private final CRUDHumedad crudH;
+
+    private Temperature t;
+    private float varT;
+    private float temperatura;
+    private Humidity h;
+    private float varH;
+    private float humedad;
+
+    public HiloConnectArduinoDB() {
         readArduino = new ReadArduino();
         crudT = CRUDTemperatura.getInstance();
         crudH = CRUDHumedad.getInstance();
@@ -42,31 +38,28 @@ public class HiloConnectArduinoDB extends Thread {
 
             try {
                 try {
-
-                    modelTemperatura = (ModelTemperatura) crudT.selectLast().get(0);
-                    temperaturaVariacion = modelTemperatura.getTemperatura();
-                    modelHumedad = (ModelHumedad) crudH.selectLast().get(0);
-                    humeadadVariacion = modelHumedad.getHumedad();
-                } catch (IndexOutOfBoundsException e) {
-                    temperaturaVariacion = 0;
-                    humeadadVariacion = 0;
+                    t = (Temperature) crudT.selectLast();
+                    varT = t.getCelsius();
+                    h = (Humidity) crudH.selectLast();
+                    varH = h.getPercentage().get();
+                } catch (NullPointerException e) {
+                    varT = 0;
+                    varH = 0;
                 }
 
                 temperatura = (float) readArduino.selectAll().get(0);
-                System.out.println(temperatura+"aqui toy temperatura");
                 humedad = (float) readArduino.selectAll().get(1);
-                System.out.println(humedad+"aqui toy humedad");
-                if (temperaturaVariacion != temperatura) {
-                    crudT.insert(new ModelTemperatura(
-                            LocalDate.now().toString(),
-                            LocalTime.parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).toString(),
-                            temperatura));
+
+                System.out.println("\n-----ARDUINO-----");
+                System.out.println("Temperatura -> " + temperatura);
+                System.out.println("Humedad -> " + humedad);
+                System.out.println("");
+
+                if (varT != temperatura) {
+                    crudT.insert(new Temperature(temperatura, LocalDateTime.now()));
                 }
-                if (humeadadVariacion != humedad) {
-                    crudH.insert(new ModelHumedad(
-                            LocalDate.now().toString(),
-                            LocalTime.parse(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))).toString(),
-                            humedad));
+                if (varH != humedad) {
+                    crudH.insert(new Humidity((int) humedad, LocalDateTime.now()));
                 }
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -74,4 +67,5 @@ public class HiloConnectArduinoDB extends Thread {
             }
         }
     }
+
 }

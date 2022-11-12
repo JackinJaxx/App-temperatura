@@ -4,6 +4,7 @@
  */
 package com.sensor.graphics.controllers;
 
+import com.sensor.app.models.CRUDS.CRUDHumedad;
 import com.sensor.graphics.models.abstracs.CatalogGraphics;
 import com.sensor.graphics.models.Humidity;
 import com.sensor.graphics.views.JFrameGraphics;
@@ -30,6 +31,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     private final int SECONDS = 2000;
     private int MIN;
     private int ACT_MIN;
+    private int ACT_SEC;
     private int ACT_i;
 
     private final int CARTESIAN_X = 30;
@@ -51,6 +53,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     public Integer throwJPanel(int witdh, int height) {
         if (jPanel == null) {
             jPanel = new JPanelHumidity(this, witdh, height);
+            System.out.println(jPanel);
             jFrame.jCanvas.add(jPanel);
 
             CARTESIAN_Y = (int) (((float) jPanel.getHeight() / (float) Humidity.RANGE) * ((Humidity.MIN < 0) ? Humidity.MAX : Humidity.RANGE));
@@ -71,7 +74,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
             return 0;
         }
     }
-    
+
     @Override
     public Integer throwJPanel(int witdh, int height, ArrayList<Object> function) {
         if (jPanel == null) {
@@ -146,7 +149,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
                 count++;
             }
             for (Object hx : function) {
-                ((Humidity) hx).y = (int)(prom / count);
+                ((Humidity) hx).y = (int) (prom / count);
             }
             return 1;
         } catch (NullPointerException e) {
@@ -162,7 +165,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
 
             Graphics2D g2d = (Graphics2D) g;
             g2d.setStroke(new BasicStroke(3));
-            g2d.setColor(Color.GREEN);
+            g2d.setColor(Color.BLUE);
             g2d.drawLine(h1.x, h1.y, h2.x, h2.y);
 
             System.out.println("H1 = (" + h1.x + ", " + h1.y + ");");
@@ -185,10 +188,13 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
             g2d.setStroke(new BasicStroke(1));
             g2d.setColor(Color.RED);
             g2d.drawLine(h.x, h.y, h.x, CARTESIAN_Y);
-            g2d.setColor(Color.GREEN);
+            g2d.setColor(Color.BLUE);
             g2d.fillOval(h.x - 4, h.y - 4, 8, 8);
             g2d.setColor(Color.BLACK);
-            g2d.drawString("(" + h.x + "," + h.getPercentage().get() + "%)", h.x + 5, h.y + 5);
+
+            if (h.x == (int) (SECOND_X * ACT_SEC + CARTESIAN_X)) {
+                g2d.drawString("(" + h.x + "," + h.getPercentage().get() + "°)", h.x + 5, h.y + 5);
+            }
 
             return 1;
         } catch (NullPointerException e) {
@@ -199,16 +205,17 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     @Override
     public Integer paintGraphic(Graphics g) {
         try {
-            Humidity h = new Humidity(0, (int) (Math.random() * Humidity.RANGE + Humidity.MIN), LocalDateTime.now());
+            Humidity h = (Humidity) CRUDHumedad.getInstance().selectLast();
             function.add(h);
+
+            h.x = (int) (SECOND_X * ACT_SEC + CARTESIAN_X);
+            h.y = jPanel.getHeight() - (int) (PERCENTAGE_Y * (h.getPercentage().get() - Humidity.MIN));
 
             //SI HEMOS LLEGADO AL BORDE / SI YA HA PASADO EL MINUTO MAXIMO
             if (ACT_MIN > MIN || (ACT_MIN == 0 && MIN == 59)) {
                 MIN = ACT_MIN;
                 ACT_i = (function.size() - 1);
             }
-
-            function.stream().forEach(hx -> setSecondCoordinates(hx));
 
             for (int i = ACT_i; i < function.size(); i++) {
                 paintHelpLine(g, function.get(i + 1));
@@ -262,7 +269,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setStroke(new BasicStroke(1));
-        g2d.setColor(new Color(0, 0, 255, 75));
+        g2d.setColor(new Color(0, 255, 0, 75));
         for (int x = 0; x <= jPanel.getWidth(); x += SECOND_X) {
             g2d.drawLine(x, 0, x, jPanel.getHeight());
         }
@@ -293,7 +300,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     @Override
     public void actionPerformed(ActionEvent e) {
         ACT_MIN = LocalDateTime.now().getMinute();
-
+        ACT_SEC = LocalDateTime.now().getSecond();
         jPanel.repaint();
     }
 }

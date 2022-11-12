@@ -1,11 +1,8 @@
 package com.sensor.app;
 
-<<<<<<< HEAD:src/main/java/com/sensor/app/App.java
-import com.sensor.app.controllers.ControllerMenu;
-=======
-import App.Controller.ControllerMenu;
-import App.Model.Threads.HiloConnectArduinoDB;
->>>>>>> eea6d66 (backup):src/App/App.java
+
+import com.sensor.app.controller.ControllerMenu;
+import com.sensor.app.models.Threads.HiloConnectArduinoDB;
 
 import javax.swing.*;
 

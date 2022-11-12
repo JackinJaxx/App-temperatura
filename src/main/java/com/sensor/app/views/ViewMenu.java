@@ -5,7 +5,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class ViewMenu extends JFrame {
+public final class ViewMenu extends JFrame {
 
     private JPanel panelMenu;
     private Font fontPrincipal, fontPrincipal2, fontTitulo, fontComentarios;
@@ -21,7 +21,6 @@ public class ViewMenu extends JFrame {
         createJPanels();
         createJtextFields();
         createJLabels();
-
 
         setLayout(null);
         setSize(800, 600);
@@ -78,8 +77,6 @@ public class ViewMenu extends JFrame {
         panelMenu.add(labelButton2);
 
         //************************************Decoraciones************************************
-
-
         labelGitHub = new JLabel();
         labelGitHub.setIcon(new ImageIcon("src/main/resources/Images/github.png"));
         labelGitHub.setBounds(4, 155, labelGitHub.getIcon().getIconWidth(), labelGitHub.getIcon().getIconHeight());
@@ -96,7 +93,6 @@ public class ViewMenu extends JFrame {
         panelMenu.add(labelTierra);
 
         //************************************Fondo************************************
-
         JLabel labelFondo = new JLabel();
         labelFondo.setIcon(new ImageIcon("src/main/resources/Images/fondoMenu.png"));
         labelFondo.setBounds(0, 0, labelFondo.getIcon().getIconWidth(), labelFondo.getIcon().getIconHeight());

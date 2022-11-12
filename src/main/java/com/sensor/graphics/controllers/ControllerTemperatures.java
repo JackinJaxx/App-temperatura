@@ -4,6 +4,7 @@
  */
 package com.sensor.graphics.controllers;
 
+import com.sensor.app.models.CRUDS.CRUDTemperatura;
 import com.sensor.graphics.models.Temperature;
 import com.sensor.graphics.views.JPanelTemperature;
 import java.awt.BasicStroke;
@@ -30,6 +31,7 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
     private final int SECONDS = 2000;
     private int MIN;
     private int ACT_MIN;
+    private int ACT_SEC;
     private int ACT_i;
 
     private int CARTESIAN_X;
@@ -51,10 +53,10 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
     @Override
     public Integer throwJPanel(int witdh, int height) {
         if (jPanel == null) {
-            
+
             jPanel = new JPanelTemperature(this, witdh, height);
             jFrame.jCanvas.add(jPanel);
-            
+
             CARTESIAN_X = 30;
             CARTESIAN_Y = (int) (((float) jPanel.getHeight() / (float) Temperature.RANGE) * ((Temperature.MIN < 0) ? Temperature.MAX : Temperature.RANGE));
             CARTESIAN_WIDTH = this.jPanel.getWidth() - this.CARTESIAN_X;
@@ -74,9 +76,9 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
             return 0;
         }
     }
-    
+
     @Override
-    public Integer throwJPanel(int witdh, int height, ArrayList <Object> function) {
+    public Integer throwJPanel(int witdh, int height, ArrayList<Object> function) {
         if (jPanel == null) {
             jPanel = new JPanelTemperature(this, witdh, height, function);
             jFrame.jCanvas.add(jPanel);
@@ -100,8 +102,6 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
             return 0;
         }
     }
-    
-    
 
     @Override
     public Integer setSecondCoordinates(Object object) {
@@ -109,7 +109,7 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
             Temperature t = (Temperature) object;
 
             t.x = (int) (SECOND_X * t.getDate().getSecond() + CARTESIAN_X);
-            t.y = jPanel.getHeight() - (int) (CELSIUS_Y * (t.getCelsius().get() - Temperature.MIN));
+            t.y = jPanel.getHeight() - (int) (CELSIUS_Y * (t.getACelsius().get() - Temperature.MIN));
 
             return 1;
         } catch (NullPointerException e) {
@@ -131,7 +131,7 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
             } else if ((t.getDate().getHour() / 6) < 4) {
                 t.x = (int) (RANGE_X * ((t.getDate().getHour() - 18) * 60) + t.getDate().getMinute() + CARTESIAN_X);
             }
-            t.y = jPanel.getHeight() - (int) (CELSIUS_Y * (t.getCelsius().get() - Temperature.MIN));
+            t.y = jPanel.getHeight() - (int) (CELSIUS_Y * (t.getACelsius().get() - Temperature.MIN));
 
             return 1;
         } catch (NullPointerException e) {
@@ -147,7 +147,7 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
 
             for (Object tx : function) {
                 ((Temperature) tx).x = (int) (HOUR_X * ((Temperature) tx).getDate().getHour() + CARTESIAN_X);
-                ((Temperature) tx).y = jPanel.getHeight() - (int) (CELSIUS_Y * (((Temperature) tx).getCelsius().get() - Temperature.MIN));
+                ((Temperature) tx).y = jPanel.getHeight() - (int) (CELSIUS_Y * (((Temperature) tx).getACelsius().get() - Temperature.MIN));
                 prom += (float) (((Temperature) tx).y);
                 count++;
             }
@@ -186,12 +186,18 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
             g2d.setStroke(new BasicStroke(1));
             g2d.setColor(Color.BLUE);
             g2d.drawLine(t.x, t.y, t.x, CARTESIAN_Y);
-            //g2d.drawLine(t.x, t.y, jFrame.CARTESIAN_X, t.y);
             g2d.setColor(Color.RED);
             g2d.fillOval(t.x - 4, t.y - 4, 8, 8);
-            
+
             g2d.setColor(Color.BLACK);
-            g2d.drawString("(" + t.x + "," + t.getCelsius().get() + "°)", t.x + 5, t.y + 5);
+
+            if (t.x == (int) (SECOND_X * ACT_SEC + CARTESIAN_X)) {
+                g2d.drawString("(" + t.x + "," + t.getACelsius().get() + "°)", t.x + 5, t.y + 5);
+
+                System.out.println("---------GRAPHICS---------");
+                System.out.println("CELSIUS -> " + t.getACelsius().get());
+                System.out.println("P = (" + t.x + ", " + t.y + ")");
+            }
 
             return 1;
         } catch (NullPointerException e) {
@@ -202,23 +208,22 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
     @Override
     public Integer paintGraphic(Graphics g) {
         try {
-            Temperature temp = new Temperature(0, (int) (Math.random() * Temperature.RANGE + Temperature.MIN), LocalDateTime.now());
-            function.add(temp);
+            Temperature t = (Temperature) CRUDTemperatura.getInstance().selectLast();
+
+            t.x = (int) (SECOND_X * ACT_SEC + CARTESIAN_X);
+            t.y = jPanel.getHeight() - (int) (CELSIUS_Y * (t.getACelsius().get() - Temperature.MIN));
+
+            function.add(t);
 
             //SI HEMOS LLEGADO AL BORDE / SI YA HA PASADO EL MINUTO MAXIMO
             if (ACT_MIN > MIN || (ACT_MIN == 0 && MIN == 59)) {
                 MIN = ACT_MIN;
                 ACT_i = (function.size() - 1);
             }
-            function.stream().forEach(t -> setSecondCoordinates(t));
 
             for (int i = ACT_i; i < function.size(); i++) {
                 paintHelpLine(g, function.get(i + 1));
                 paintLine(g, function.get(i), function.get(i + 1));
-
-                System.out.println("CELSIUS: " + function.get(i + 1).getCelsius().get());
-                System.out.println("X1: " + function.get(i).x + " | Y1: " + function.get(i).y);
-                System.out.println("X2: " + function.get(i + 1).x + " | Y2: " + function.get(i + 1).y);
             }
             return 1;
         } catch (IndexOutOfBoundsException | NullPointerException e) {
@@ -297,7 +302,7 @@ public class ControllerTemperatures extends ControllerGraphics implements Catalo
     @Override
     public void actionPerformed(ActionEvent e) {
         ACT_MIN = LocalDateTime.now().getMinute();
-
+        ACT_SEC = LocalDateTime.now().getSecond();
         jPanel.repaint();
     }
 }

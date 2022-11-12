@@ -1,4 +1,4 @@
-package App.Model;
+package com.sensor.app.models;
 
 public class ModelHumedad {
     private String fecha;

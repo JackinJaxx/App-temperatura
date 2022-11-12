@@ -1,16 +1,11 @@
-<<<<<<<< HEAD:src/main/java/com/sensor/app/connections/ConnectDB.java
-package com.sensor.app.connections;
-========
-package App.Model.Connections;
->>>>>>>> eea6d66 (backup):src/main/java/com/sensor/app/models/Connections/ConnectDB.java
-
+package com.sensor.app.models.Connections;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectDB {
-    //connectDatabase postgresql
+
     private final String url = "jdbc:postgresql://localhost:5432/termometro"; //aca se pone el nombre de la base de datos
     private final String user = "postgres";
     private final String password = "qw6xdg7sB!"; //contraseña de postgres
@@ -18,14 +13,15 @@ public class ConnectDB {
     private Connection connection = null;
 
     public ConnectDB() {
+
     }
-    /*public static ConnectDB getInstance(){
-        if(instance == null){
+
+    public static ConnectDB getInstance() {
+        if (instance == null) {
             instance = new ConnectDB();
         }
         return instance;
     }
-    */
 
     public Boolean connectDatabase() {
         try {
@@ -44,6 +40,7 @@ public class ConnectDB {
         }
         return false;
     }
+
     public Connection getConnection() {
         return connection;
     }

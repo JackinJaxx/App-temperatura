@@ -49,10 +49,9 @@ public class ControllerGraphics {
         try {
             jFond.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
             jFond.setIcon(icon);
-            jFrame.jBackground.add(jFond, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0));
-            
+            jFrame.jBackground.add(jFond);
             return 1;
-        } catch (NullPointerException e){
+        } catch (NullPointerException | IllegalArgumentException e){
             System.out.println("Error al cargar la imagen del jBackground del jFrameGraphics");
             return 0;
         }

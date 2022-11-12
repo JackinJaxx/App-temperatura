@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Temperature {
 
-    private Integer id;
     private final AtomicInteger C;
+    private final AtomicInteger decimal;
     private LocalDateTime date;
 
     public Integer x = 0;
@@ -24,32 +24,36 @@ public class Temperature {
     public static final int MIN = -5;
     public static final int RANGE = MAX - MIN;
 
-    public Temperature(Integer id, int celsius, LocalDateTime fecha) {
-        this.id = id;
-        this.C = new AtomicInteger(celsius);
+    public Temperature(float celsius, LocalDateTime fecha) {
+        this.C = new AtomicInteger(Math.round(celsius));
+        this.decimal = new AtomicInteger(Math.round((celsius - Math.round(celsius)) * 100));
         this.date = fecha;
     }
-
-    public Integer getId() {
-        return id;
+    
+    public float getCelsius(){
+        return (float)(C.get() + ((float)(decimal.get()) / 100f));
     }
-
-    public AtomicInteger getCelsius() {
+    
+    public AtomicInteger getACelsius() {
         return C;
     }
 
+    public AtomicInteger getDecimal() {
+        return decimal;
+    }
+    
     public LocalDateTime getDate() {
         return date;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public void setCelsius(int celsius) {
         this.C.addAndGet(celsius);
     }
-
+    
+    public void setDecimal(int decimal) {
+        
+    }
+    
     public void setDate(LocalDateTime fecha) {
         this.date = fecha;
     }

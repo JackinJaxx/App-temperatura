@@ -1,8 +1,8 @@
-package App.Model.Interfaces;
+package com.sensor.app.models.Interfaces;
 
 import java.util.ArrayList;
 
 public interface Select {
-    ArrayList<Object> selectLast();
+    Object selectLast();
     ArrayList<Object> selectAll();
 }
