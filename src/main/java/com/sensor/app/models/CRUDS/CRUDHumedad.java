@@ -2,7 +2,7 @@ package com.sensor.app.models.CRUDS;
 
 import com.sensor.app.models.Connections.ConnectDB;
 import com.sensor.app.models.Interfaces.CRUDAdapter;
-import com.sensor.graphics.models.Humidity;
+import com.sensor.app.models.ModelHumidity;
 import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class CRUDHumedad extends CRUDAdapter {
 
-    public static CRUDHumedad instance;
+    private static CRUDHumedad instance;
     private final ConnectDB connectDB;
     private final Connection connection;
 
@@ -41,7 +41,7 @@ public class CRUDHumedad extends CRUDAdapter {
      * Metodo que se encarga de crear una instancia de la clase
      * @return CRUDHumedad
      */
-    static public CRUDHumedad getInstance() {
+    public static  CRUDHumedad getInstance() {
         if (instance == null) {
             instance = new CRUDHumedad();
         }
@@ -50,7 +50,7 @@ public class CRUDHumedad extends CRUDAdapter {
 
     @Override
     public String insert(Object model) {
-        Humidity modelo = (Humidity) model;
+        ModelHumidity modelo = (ModelHumidity) model;
 
         String fecha = modelo.getDate().getYear() + "/" + modelo.getDate().getMonthValue() + "/" + modelo.getDate().getDayOfMonth();
         String hora = modelo.getDate().getHour() + ":" + modelo.getDate().getMinute() + ":" + modelo.getDate().getSecond();
@@ -65,7 +65,7 @@ public class CRUDHumedad extends CRUDAdapter {
         } catch (PSQLException ew) {
             return ew.getMessage();
         } catch (SQLException e) {
-            Logger.getLogger(Humidity.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ModelHumidity.class.getName()).log(Level.SEVERE, null, e);
         }
         return "\n**HUMEDAD CREADA**\n";
     }
@@ -82,12 +82,12 @@ public class CRUDHumedad extends CRUDAdapter {
 
     @Override
     public Object selectLast() {
-        Humidity modelo = null;
+        ModelHumidity modelo = null;
         try {
             st = connection.createStatement();
             result = st.executeQuery("SELECT * FROM humedad ORDER BY fecha,hora DESC LIMIT 1");
             while (result.next()) {
-                modelo = new Humidity(
+                modelo = new ModelHumidity(
                         Integer.parseInt(result.getString(3)),
                         LocalDateTime.parse(result.getString(1) + "T" + result.getString(2)));
             }
@@ -100,13 +100,13 @@ public class CRUDHumedad extends CRUDAdapter {
 
     @Override
     public ArrayList<Object> selectAll() {
-        ArrayList<Humidity> listHumedad = new ArrayList<>();
+        ArrayList<ModelHumidity> listHumedad = new ArrayList<>();
 
         try {
             st = connection.createStatement();
             result = st.executeQuery("SELECT * FROM humedad");
             while (result.next()) {
-                listHumedad.add(new Humidity(
+                listHumedad.add(new ModelHumidity(
                         Integer.parseInt(result.getString(3)),
                         LocalDateTime.parse(result.getString(1) + "T" + result.getString(2))));
             }

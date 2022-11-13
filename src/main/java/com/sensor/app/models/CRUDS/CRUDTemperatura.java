@@ -2,7 +2,7 @@ package com.sensor.app.models.CRUDS;
 
 import com.sensor.app.models.Connections.ConnectDB;
 import com.sensor.app.models.Interfaces.CRUDAdapter;
-import com.sensor.graphics.models.Temperature;
+import com.sensor.app.models.ModelTemperature;
 import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class CRUDTemperatura extends CRUDAdapter {
 
-    public static CRUDTemperatura instance;
+    private static CRUDTemperatura instance;
     private final ConnectDB connectDB;
     private final Connection connection;
 
@@ -50,7 +50,7 @@ public class CRUDTemperatura extends CRUDAdapter {
 
     @Override
     public String insert(Object model) {
-        Temperature modelo = (Temperature) model;
+        ModelTemperature modelo = (ModelTemperature) model;
 
         String fecha = modelo.getDate().getYear() + "/" + modelo.getDate().getMonthValue() + "/" + modelo.getDate().getDayOfMonth();
         String hora = modelo.getDate().getHour() + ":" + modelo.getDate().getMinute() + ":" + modelo.getDate().getSecond();
@@ -65,19 +65,19 @@ public class CRUDTemperatura extends CRUDAdapter {
         } catch (PSQLException ew) {
             return ew.getMessage();
         } catch (SQLException e) {
-            Logger.getLogger(Temperature.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ModelTemperature.class.getName()).log(Level.SEVERE, null, e);
         }
         return "\n**TEMPERATURA CREADA**\n";
     }
 
     @Override
     public Object selectLast() {
-        Temperature modelo = null;
+        ModelTemperature modelo = null;
         try {
             st = connection.createStatement();
             result = st.executeQuery("SELECT * FROM temperatura ORDER BY fecha,hora DESC LIMIT 1");
             while (result.next()) {
-                modelo = new Temperature(
+                modelo = new ModelTemperature(
                         result.getFloat(3),
                         LocalDateTime.parse(result.getString(1) + "T" + result.getString(2)));
             }
@@ -90,12 +90,12 @@ public class CRUDTemperatura extends CRUDAdapter {
 
     @Override
     public ArrayList<Object> selectAll() {
-        ArrayList<Temperature> listTemperatura = new ArrayList<>();
+        ArrayList<ModelTemperature> listTemperatura = new ArrayList<>();
         try {
             st = connection.createStatement();
             result = st.executeQuery("SELECT * FROM temperatura");
             while (result.next()) {
-                listTemperatura.add(new Temperature(
+                listTemperatura.add(new ModelTemperature(
                         result.getFloat(3),
                         LocalDateTime.parse(result.getString(1) + "T" + result.getString(2))));
             }

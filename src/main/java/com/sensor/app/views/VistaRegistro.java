@@ -32,6 +32,7 @@ public class VistaRegistro extends javax.swing.JFrame {
         System.out.println(fecha);
         System.out.println(hora);
         initComponents();
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     }
 
@@ -109,7 +110,7 @@ public class VistaRegistro extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Roboto Black", 1, 36)); // NOI18N
         jLabel1.setText("Registros");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "0-6 HORAS", "6-12 HORAS", "12-18 HORAS", "18-24 HORAS" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "0:00-5:59", "6:00-11:59", "12:00-17:59", "18:00-23:59" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);

@@ -2,10 +2,11 @@ package com.sensor.app.controller;
 
 import com.sensor.app.models.CRUDS.CRUDHumedad;
 import com.sensor.app.models.CRUDS.CRUDTemperatura;
+import com.sensor.app.models.CRUDS.ReadArduino;
+import com.sensor.app.models.ModelHumidity;
 import com.sensor.app.views.ViewMenu;
 import com.sensor.graphics.controllers.ControllerGraphics;
-import com.sensor.graphics.models.Humidity;
-import com.sensor.graphics.models.Temperature;
+import com.sensor.app.models.ModelTemperature;
 
 import javax.swing.*;
 import java.awt.event.FocusEvent;
@@ -29,6 +30,7 @@ public final class ControllerMenu {
 
     /**
      * Constructor de la clase.Esta instancia la vista del menu
+     *
      * @see ViewMenu
      */
     public ControllerMenu() {
@@ -43,6 +45,7 @@ public final class ControllerMenu {
 
     /**
      * Metodo que se encarga de actualizar el termometro que esta en la vista dependiendo del ultimo valor en la base de datos
+     *
      * @see CRUDTemperatura
      * @see CRUDHumedad
      */
@@ -51,7 +54,7 @@ public final class ControllerMenu {
         CRUDTemperatura crudT = CRUDTemperatura.getInstance();
         CRUDHumedad crudH = CRUDHumedad.getInstance();
         int j = 0;
-        
+
         for (int i = -30; i <= 50; i = i + 2) {
             images[j] = new ImageIcon("src/main/resources/Images/termometro/termometro_" + i + ".png");
             images[j].setDescription(String.valueOf(i));
@@ -59,18 +62,18 @@ public final class ControllerMenu {
         }
 
         //esto pasa cada 2 segundos
-        Timer timer = new Timer(1500,e ->{
-            Temperature t;
+        Timer timer = new Timer(1000, e -> {
+            ModelTemperature t;
             float temperatura;
-            Humidity h;
+            ModelHumidity h;
             float humedad;
-            
-            try{
-                t = (Temperature) crudT.selectLast();
+
+            try {
+                t = (ModelTemperature) crudT.selectLast();
                 temperatura = t.getCelsius();
-                h = (Humidity) crudH.selectLast();
+                h = (ModelHumidity) crudH.selectLast();
                 humedad = h.getPercentage().get();
-            }catch (NullPointerException ex){
+            } catch (NullPointerException ex) {
                 temperatura = 0;
                 humedad = 0;
             }
@@ -93,6 +96,7 @@ public final class ControllerMenu {
 
     /**
      * Metodo que se encarga de inicializar los eventos de la vista
+     *
      * @see ViewMenu
      * @see ControllerMenu#actualizaTermometro()
      * @see ControllerMenu#eventsLabelButtons()
@@ -102,7 +106,7 @@ public final class ControllerMenu {
     public void initEvents() {
         actualizaTermometro();//tiene la logica para pedir datos cada 1.5 segundos y actualizar la imagen correspondiente
         eventsLabelButtons();
-        
+
         viewMenu.labelGitHub.addMouseListener(new MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 try {
@@ -126,6 +130,7 @@ public final class ControllerMenu {
 
     /**
      * Metodo que se encarga de inicializar los eventos de los labels y botones de la vista
+     *
      * @see ViewMenu
      * @see ControllerRegistros
      * @see ControllerGraphics
@@ -140,18 +145,21 @@ public final class ControllerMenu {
             @Override
             public void mouseReleased(MouseEvent e) {
                 viewMenu.labelButton1.setIcon(new ImageIcon("src/main/resources/Images/buttonMenuPush.png"));
+                if(ReadArduino.getInstance().selectAll().get(0)==null){
+                    JOptionPane.showMessageDialog(viewMenu, "No esta conectado el arduino");
+                }else{
+                    if (viewTemperature == null && viewHumidity == null) {
+                        viewTemperature = new ControllerGraphics();
+                        viewHumidity = new ControllerGraphics();
 
-                if (viewTemperature == null && viewHumidity == null) {
-                    viewTemperature = new ControllerGraphics();
-                    viewHumidity = new ControllerGraphics();
-                    
-                    viewTemperature.throwJFrame();
-                    viewTemperature.throwTemperature();
-                    viewHumidity.throwJFrame();
-                    viewHumidity.throwHumidity();
-                } else if (!(viewTemperature.jFrame.isVisible() && viewHumidity.jFrame.isVisible())){
-                    viewTemperature.throwJFrame();
-                    viewHumidity.throwJFrame();
+                        viewTemperature.throwJFrame();
+                        viewTemperature.throwTemperature();
+                        viewHumidity.throwJFrame();
+                        viewHumidity.throwHumidity();
+                    } else if (!(viewTemperature.jFrame.isVisible() && viewHumidity.jFrame.isVisible())) {
+                        viewTemperature.throwJFrame();
+                        viewHumidity.throwJFrame();
+                    }
                 }
             }
 

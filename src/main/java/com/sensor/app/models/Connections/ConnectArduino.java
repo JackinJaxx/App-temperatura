@@ -16,8 +16,8 @@ public class ConnectArduino {
     private final SerialPortEventListener listener;
     private PanamaHitek_MultiMessage multi;
     private final String port = "COM4"; //aca se pondra el puerto al que esta conectada tu computadora
-    private float temperatura;
-    private float humedad;
+    private Float temperatura;
+    private Float humedad;
 
     /**
      * Constructor de la clase
@@ -50,6 +50,8 @@ public class ConnectArduino {
         try {
             ino.arduinoRX(port, 9600, listener);
         } catch (ArduinoException | SerialPortException e) {
+            temperatura = null;
+            humedad = null;
             return "Error al conectar Arduino: " + e;
         }
         return "Puerto " + port + " conectado";
@@ -64,7 +66,7 @@ public class ConnectArduino {
      * Metodo getter de la temperatura
      * @return float temperatura
      */
-    public float getTemperatura() {
+    public Float getTemperatura() {
         return temperatura;
     }
 
@@ -72,7 +74,7 @@ public class ConnectArduino {
      * Metodo getter de la humedad
      * @return float humedad
      */
-    public float getHumedad() {
+    public Float getHumedad() {
         return humedad;
     }
 }

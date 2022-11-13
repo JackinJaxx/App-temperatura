@@ -2,16 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.sensor.graphics.models;
+package com.sensor.app.models;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
- * @author KevinCyndaquil
+ * Esta clase se encarga de guardar los datos de la humedad
+ * @author KevinCyndaqui, JackinJaxx, Wuicho24
+ * @version 1.0
  */
-public class Humidity {
+public class ModelHumidity {
 
     private final AtomicInteger percentage;
     private LocalDateTime date;
@@ -23,7 +24,12 @@ public class Humidity {
     public Integer x;
     public Integer y;
 
-    public Humidity(int percentage, LocalDateTime date) {
+    /**
+     * Constructor de la clase
+     * @param percentage porcentaje de humedad
+     * @param date incluye la fecha y hora
+     */
+    public ModelHumidity(int percentage, LocalDateTime date) {
         this.percentage = new AtomicInteger(percentage);
         this.date = date;
     }

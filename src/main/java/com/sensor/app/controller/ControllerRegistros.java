@@ -2,10 +2,12 @@ package com.sensor.app.controller;
 
 import com.sensor.app.models.CRUDS.CRUDHumedad;
 import com.sensor.app.models.CRUDS.CRUDTemperatura;
+import com.sensor.app.models.ModelHumidity;
 import com.sensor.app.views.VistaRegistro;
 import com.sensor.graphics.controllers.ControllerGraphics;
-import com.sensor.graphics.models.Humidity;
-import com.sensor.graphics.models.Temperature;
+import com.sensor.app.models.ModelTemperature;
+
+
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionEvent;
@@ -13,7 +15,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
 /**
  * Clase que se encarga de controlar la vista Registros
  *
@@ -22,13 +27,13 @@ import java.util.ArrayList;
  */
 public final class ControllerRegistros {
     public static ControllerRegistros instance;
-    
+
     private final VistaRegistro vistaRegistro;
     private final CRUDHumedad crudH;
     private final CRUDTemperatura crudT;
     private final DefaultTableModel tablaT;
     private final DefaultTableModel tablaH;
-    
+
     private ControllerGraphics viewTemperature;
     private ControllerGraphics viewHumidity;
     private LocalDate fechaC;
@@ -48,6 +53,7 @@ public final class ControllerRegistros {
 
     /**
      * Metodo que implementa el patron singleton para que solo exista una instancia de esta clase
+     *
      * @return la instancia de la clase
      */
     public static ControllerRegistros getInstance() {
@@ -61,34 +67,74 @@ public final class ControllerRegistros {
      * Metodo que se encarga de mostrar la vista
      */
     public void showView() {
-        vistaRegistro.setVisible(true);
-        agregarDatosTabla();
+        new Thread(() -> {
+            vistaRegistro.setVisible(true);
+            while (vistaRegistro.isVisible()) {
+                vistaRegistro.repaint();
+                agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
     /**
      * Metodo que se encarga de agregar los datos de la base de datos a las tablas
+     *
+     * @param rangoHora All, 0:00-5:59, 6:00-11:59, 12:00-17:59, 18:00-23:59
      */
-    public void agregarDatosTabla() {
+    public void agregarDatosTabla(String rangoHora) {
+        LocalTime horaInicio = null;
+        LocalTime horaFin = null;
+        boolean bandera = rangoHora.equals("All");
+        if (!bandera) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+            System.out.println(rangoHora);
+            horaInicio = LocalTime.parse(rangoHora.split("-")[0],formatter);
+            System.out.println(horaInicio);
+            horaFin = LocalTime.parse(rangoHora.split("-")[1],formatter);
+            System.out.println(horaFin);
+        }
         tablaT.setRowCount(0);
-        //System.out.println(LocalDate.now());
+        fechaC = vistaRegistro.getjDateChooser1().getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
         for (Object modelo : crudT.selectAll()) {
-            Temperature t = (Temperature) modelo;
-            if (t.getDate().getDayOfMonth() == LocalDate.now().getDayOfMonth()) {
+            ModelTemperature t = (ModelTemperature) modelo;
+            if (bandera) {
+                if (t.getDate().toLocalDate().equals(fechaC)) {
+                    tablaT.addRow(new Object[]{
+                            t.getDate().getYear() + " / " + t.getDate().getDayOfMonth() + " / " + t.getDate().getDayOfMonth(),
+                            t.getDate().getHour() + ":" + t.getDate().getMinute() + ":" + t.getDate().getSecond(),
+                            t.getCelsius()
+                    });
+                }
+            } else if (t.getDate().toLocalDate().equals(fechaC) && (t.getDate().toLocalTime().isAfter(horaInicio) && t.getDate().toLocalTime().isBefore(horaFin))) {
                 tablaT.addRow(new Object[]{
-                    t.getDate().getYear() + " / " + t.getDate().getDayOfMonth() + " / " + t.getDate().getDayOfMonth(),
-                    t.getDate().getHour() + ":" + t.getDate().getMinute() + ":" + t.getDate().getSecond(),
-                    t.getCelsius()
+                        t.getDate().getYear() + " / " + t.getDate().getDayOfMonth() + " / " + t.getDate().getDayOfMonth(),
+                        t.getDate().getHour() + ":" + t.getDate().getMinute() + ":" + t.getDate().getSecond(),
+                        t.getCelsius()
                 });
             }
         }
         tablaH.setRowCount(0);
         for (Object modelo : crudH.selectAll()) {
-            Humidity h = (Humidity) modelo;
-            if (h.getDate().getDayOfMonth() == LocalDate.now().getDayOfMonth()) {
+            ModelHumidity h = (ModelHumidity) modelo;
+            if (bandera) {
+                if (h.getDate().toLocalDate().equals(fechaC)) {
+                    tablaH.addRow(new Object[]{
+                            h.getDate().getYear() + " / " + h.getDate().getDayOfMonth() + " / " + h.getDate().getDayOfMonth(),
+                            h.getDate().getHour() + ":" + h.getDate().getMinute() + ":" + h.getDate().getSecond(),
+                            h.getPercentage()
+                    });
+                }
+            } else if (h.getDate().toLocalDate().equals(fechaC) && (h.getDate().toLocalTime().isAfter(horaInicio) && h.getDate().toLocalTime().isBefore(horaFin))) {
                 tablaH.addRow(new Object[]{
-                    h.getDate().getYear() + " / " + h.getDate().getDayOfMonth() + " / " + h.getDate().getDayOfMonth(),
-                    h.getDate().getHour() + ":" + h.getDate().getMinute() + ":" + h.getDate().getSecond(),
-                    h.getPercentage()
+                        h.getDate().getYear() + " / " + h.getDate().getDayOfMonth() + " / " + h.getDate().getDayOfMonth(),
+                        h.getDate().getHour() + ":" + h.getDate().getMinute() + ":" + h.getDate().getSecond(),
+                        h.getPercentage()
                 });
             }
         }
@@ -100,54 +146,31 @@ public final class ControllerRegistros {
     public void events() {
         vistaRegistro.getjDateChooser1().getDateEditor().addPropertyChangeListener((PropertyChangeEvent evt) -> {
             if ("date".equals(evt.getPropertyName())) {
-                fechaC = vistaRegistro.getjDateChooser1().getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-                tablaT.setRowCount(0);
-                System.out.println(LocalDate.now());
-                for (Object modelo : crudT.selectAll()) {
-                    Temperature t = (Temperature) modelo;
-                    if (t.getDate().getDayOfMonth() == fechaC.getDayOfMonth()) {
-                        tablaT.addRow(new Object[]{
-                            t.getDate().getYear() + " / " + t.getDate().getDayOfMonth() + " / " + t.getDate().getDayOfMonth(),
-                            t.getDate().getHour() + ":" + t.getDate().getMinute() + ":" + t.getDate().getSecond(),
-                            t.getCelsius()
-                        });
-                    }
-                }
-                tablaH.setRowCount(0);
-                for (Object modelo : crudH.selectAll()) {
-                    Humidity h = (Humidity) modelo;
-                    if (h.getDate().getDayOfMonth() == fechaC.getDayOfMonth()) {
-                        tablaH.addRow(new Object[]{
-                            h.getDate().getYear() + " / " + h.getDate().getDayOfMonth() + " / " + h.getDate().getDayOfMonth(),
-                            h.getDate().getHour() + ":" + h.getDate().getMinute() + ":" + h.getDate().getSecond(),
-                            h.getPercentage()
-                        });
-                    }
-                }
+                agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
             }
         });
-        vistaRegistro.jButton1.addMouseListener(new MouseAdapter(){
+        vistaRegistro.jButton1.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent ev){
+            public void mouseClicked(MouseEvent ev) {
                 fechaC = vistaRegistro.getjDateChooser1().getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-                ArrayList <Object> tx = CRUDTemperatura.getInstance().selectAll();
-                ArrayList <Object> funcT = new ArrayList<>();
-                ArrayList <Object> hx = CRUDHumedad.getInstance().selectAll();
-                ArrayList <Object> funcH = new ArrayList<>();
-                
+                ArrayList<Object> tx = CRUDTemperatura.getInstance().selectAll();
+                ArrayList<Object> funcT = new ArrayList<>();
+                ArrayList<Object> hx = CRUDHumedad.getInstance().selectAll();
+                ArrayList<Object> funcH = new ArrayList<>();
+
                 tx.forEach(o -> {
-                    Temperature t = (Temperature)o;
-                    if(t.getDate().getDayOfMonth() == fechaC.getDayOfMonth()){
+                    ModelTemperature t = (ModelTemperature) o;
+                    if (t.getDate().getDayOfMonth() == fechaC.getDayOfMonth()) {
                         funcT.add(t);
                     }
                 });
                 hx.forEach(o -> {
-                    Humidity h = (Humidity)o;
-                    if(h.getDate().getDayOfMonth() == fechaC.getDayOfMonth()){
+                    ModelHumidity h = (ModelHumidity) o;
+                    if (h.getDate().getDayOfMonth() == fechaC.getDayOfMonth()) {
                         funcH.add(h);
                     }
                 });
-                
+
                 if (viewTemperature == null && viewHumidity == null) {
                     viewTemperature = new ControllerGraphics();
                     viewHumidity = new ControllerGraphics();
@@ -155,35 +178,31 @@ public final class ControllerRegistros {
                     //viewTemperature.throwTemperature(funcT);
                     viewHumidity.throwJFrame();
                     //viewHumidity.throwHumidity(funcH);
-                } else if (!(viewTemperature.jFrame.isVisible() && viewHumidity.jFrame.isVisible())){
+                } else if (!(viewTemperature.jFrame.isVisible() && viewHumidity.jFrame.isVisible())) {
                     viewTemperature.throwJFrame();
                     viewHumidity.throwJFrame();
                 }
-                
+
                 viewTemperature.throwTemperature(funcT);
                 viewHumidity.throwHumidity(funcH);
             }
         });
         vistaRegistro.getjComboBox1().addActionListener((ActionEvent e) -> {
-            /*if(vistaRegistro.getjComboBox1().getSelectedIndex() == 0){
-            LocalDate fechaC = vistaRegistro.getjDateChooser1().getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-            tablaT.setRowCount(0);
-            for (Object modelo : crudT.selectAll()) {
-            ModelTemperatura t = (ModelTemperatura) modelo;
-            if(t.getFecha().equals(fechaC.toString()) && t.getHora()){ //ahi falta la condicion de la hora dependiendo de la seleccion del combobox
-            tablaT.addRow(new Object[]{t.getFecha(), t.getHora(), t.getTemperatura()});
+            if (vistaRegistro.getjComboBox1().getSelectedIndex() == 0) {
+                agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
             }
-            //tablaT.addRow(new Object[]{t.getFecha(), t.getHora(), t.getTemperatura()});
+            if (vistaRegistro.getjComboBox1().getSelectedIndex() == 1) {
+                agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
             }
-            tablaH.setRowCount(0);
-            for (Object modelo : crudH.selectAll()) {
-            ModelHumedad h = (ModelHumedad) modelo;
-            if (h.getFecha().equals(fechaC.toString()) && h.getHora().) {///ahi falta la condicion de la hora dependiendo de la seleccion del combobox
-            tablaH.addRow(new Object[]{h.getFecha(), h.getHora(), h.getHumedad()});
+            if (vistaRegistro.getjComboBox1().getSelectedIndex() == 2) {
+                agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
             }
-            //tablaH.addRow(new Object[]{h.getFecha(), h.getHora(), h.getHumedad()});
+            if (vistaRegistro.getjComboBox1().getSelectedIndex() == 3) {
+                agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
             }
-            }*/
+            if (vistaRegistro.getjComboBox1().getSelectedIndex() == 4) {
+                agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
+            }
         });
     }
 }

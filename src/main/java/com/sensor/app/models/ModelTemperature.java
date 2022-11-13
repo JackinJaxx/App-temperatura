@@ -2,16 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.sensor.graphics.models;
+package com.sensor.app.models;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *
- * @author KevinCyndaquil
+ * Esta clase se encarga de guardar los datos de la temperatura
+ * @author KevinCyndaqui, JackinJaxx, Wuicho24
+ * @version 1.0
  */
-public class Temperature {
+public class ModelTemperature {
 
     private final AtomicInteger C;
     private final AtomicInteger decimal;
@@ -24,10 +25,15 @@ public class Temperature {
     public static final int MIN = -5;
     public static final int RANGE = MAX - MIN;
 
-    public Temperature(float celsius, LocalDateTime fecha) {
+    /**
+     * Constructor de la clase
+     * @param celsius grados centigrados
+     * @param date incluye la date y hora
+     */
+    public ModelTemperature(float celsius, LocalDateTime date) {
         this.C = new AtomicInteger(Math.round(celsius));
         this.decimal = new AtomicInteger(Math.round((celsius - Math.round(celsius)) * 100));
-        this.date = fecha;
+        this.date = date;
     }
     
     public float getCelsius(){

@@ -34,7 +34,6 @@ public class JPanelHumidity extends javax.swing.JPanel {
 
     public JPanelHumidity(ControllerHumidity controller, int width, int height, ArrayList<Object> function) {
         initComponents();
-
         this.setBounds(0, 0, width, height);
         this.controller = controller;
         this.function = function;
@@ -77,19 +76,19 @@ public class JPanelHumidity extends javax.swing.JPanel {
         super.paint(g);
 
         /*
-        ArrayList<Humidity> fx = new ArrayList<>();
+        ArrayList<ModelHumidity> fx = new ArrayList<>();
         
-        fx.add(new Humidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 0, 0)));
-        fx.add(new Humidity(9, 10, LocalDateTime.of(2022, 11, 6, 1, 10, 10)));
-        fx.add(new Humidity(9, 30, LocalDateTime.of(2022, 11, 6, 1, 20, 20)));
-        fx.add(new Humidity(9, 29, LocalDateTime.of(2022, 11, 6, 1, 30, 30)));
-        fx.add(new Humidity(9, 30, LocalDateTime.of(2022, 11, 6, 4, 40, 40)));
-        fx.add(new Humidity(9, 35, LocalDateTime.of(2022, 11, 6, 18, 50, 50)));
-        fx.add(new Humidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 6, 0)));
-        fx.add(new Humidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 34, 10)));
-        fx.add(new Humidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 34, 20)));
-        fx.add(new Humidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 40, 30)));
-        fx.add(new Humidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 59, 40)));
+        fx.add(new ModelHumidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 0, 0)));
+        fx.add(new ModelHumidity(9, 10, LocalDateTime.of(2022, 11, 6, 1, 10, 10)));
+        fx.add(new ModelHumidity(9, 30, LocalDateTime.of(2022, 11, 6, 1, 20, 20)));
+        fx.add(new ModelHumidity(9, 29, LocalDateTime.of(2022, 11, 6, 1, 30, 30)));
+        fx.add(new ModelHumidity(9, 30, LocalDateTime.of(2022, 11, 6, 4, 40, 40)));
+        fx.add(new ModelHumidity(9, 35, LocalDateTime.of(2022, 11, 6, 18, 50, 50)));
+        fx.add(new ModelHumidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 6, 0)));
+        fx.add(new ModelHumidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 34, 10)));
+        fx.add(new ModelHumidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 34, 20)));
+        fx.add(new ModelHumidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 40, 30)));
+        fx.add(new ModelHumidity(9, 30, LocalDateTime.of(2022, 11, 6, 0, 59, 40)));
         
         System.out.println(fx.get(1).getDate().getSecond());
       

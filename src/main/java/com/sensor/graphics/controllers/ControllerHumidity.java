@@ -5,8 +5,8 @@
 package com.sensor.graphics.controllers;
 
 import com.sensor.app.models.CRUDS.CRUDHumedad;
+import com.sensor.app.models.ModelHumidity;
 import com.sensor.graphics.models.abstracs.CatalogGraphics;
-import com.sensor.graphics.models.Humidity;
 import com.sensor.graphics.views.JFrameGraphics;
 import com.sensor.graphics.views.JPanelHumidity;
 import java.awt.BasicStroke;
@@ -25,7 +25,7 @@ import javax.swing.Timer;
 public class ControllerHumidity extends ControllerGraphics implements CatalogGraphics {
 
     private JPanelHumidity jPanel;
-    private final ArrayList<Humidity> function;
+    private final ArrayList<ModelHumidity> function;
     private static Timer timer;
 
     private final int SECONDS = 2000;
@@ -56,14 +56,14 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
             System.out.println(jPanel);
             jFrame.jCanvas.add(jPanel);
 
-            CARTESIAN_Y = (int) (((float) jPanel.getHeight() / (float) Humidity.RANGE) * ((Humidity.MIN < 0) ? Humidity.MAX : Humidity.RANGE));
+            CARTESIAN_Y = (int) (((float) jPanel.getHeight() / (float) ModelHumidity.RANGE) * ((ModelHumidity.MIN < 0) ? ModelHumidity.MAX : ModelHumidity.RANGE));
             CARTESIAN_WIDTH = this.jPanel.getWidth() - CARTESIAN_X;
 
             SECOND_X = (float) CARTESIAN_WIDTH / 60.0f;
             RANGE_X = (float) CARTESIAN_WIDTH / 360.0f;
             HOUR_X = (float) CARTESIAN_WIDTH / 24.0f;
 
-            PERCENTAGE_Y = (float) jPanel.getHeight() / (float) Humidity.RANGE;
+            PERCENTAGE_Y = (float) jPanel.getHeight() / (float) ModelHumidity.RANGE;
 
             ACT_i = 0;
             MIN = LocalDateTime.now().getMinute();
@@ -81,14 +81,14 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
             jPanel = new JPanelHumidity(this, witdh, height, function);
             jFrame.jCanvas.add(jPanel);
 
-            CARTESIAN_Y = (int) (((float) jPanel.getHeight() / (float) Humidity.RANGE) * ((Humidity.MIN < 0) ? Humidity.MAX : Humidity.RANGE));
+            CARTESIAN_Y = (int) (((float) jPanel.getHeight() / (float) ModelHumidity.RANGE) * ((ModelHumidity.MIN < 0) ? ModelHumidity.MAX : ModelHumidity.RANGE));
             CARTESIAN_WIDTH = this.jPanel.getWidth() - CARTESIAN_X;
 
             SECOND_X = (float) CARTESIAN_WIDTH / 60.0f;
             RANGE_X = (float) CARTESIAN_WIDTH / 360.0f;
             HOUR_X = (float) CARTESIAN_WIDTH / 24.0f;
 
-            PERCENTAGE_Y = (float) jPanel.getHeight() / (float) Humidity.RANGE;
+            PERCENTAGE_Y = (float) jPanel.getHeight() / (float) ModelHumidity.RANGE;
 
             ACT_i = 0;
             MIN = LocalDateTime.now().getMinute();
@@ -103,10 +103,10 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     @Override
     public Integer setSecondCoordinates(Object object) {
         try {
-            Humidity h = (Humidity) object;
+            ModelHumidity h = (ModelHumidity) object;
 
             h.x = (int) (SECOND_X * h.getDate().getSecond() + CARTESIAN_X);
-            h.y = jPanel.getHeight() - (int) (PERCENTAGE_Y * (h.getPercentage().get() - Humidity.MIN));
+            h.y = jPanel.getHeight() - (int) (PERCENTAGE_Y * (h.getPercentage().get() - ModelHumidity.MIN));
 
             return 1;
         } catch (NullPointerException e) {
@@ -117,7 +117,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     @Override
     public Integer setRangeCoordinates(Object object) {
         try {
-            Humidity h = (Humidity) object;
+            ModelHumidity h = (ModelHumidity) object;
 
             if ((h.getDate().getHour() / 6) < 1) {
                 h.x = (int) (RANGE_X * (h.getDate().getHour() * 60) + h.getDate().getMinute() + CARTESIAN_X);
@@ -128,7 +128,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
             } else if ((h.getDate().getHour() / 6) < 4) {
                 h.x = (int) (RANGE_X * ((h.getDate().getHour() - 18) * 60) + h.getDate().getMinute() + CARTESIAN_X);
             }
-            h.y = jPanel.getHeight() - (int) (PERCENTAGE_Y * (h.getPercentage().get() - Humidity.MIN));
+            h.y = jPanel.getHeight() - (int) (PERCENTAGE_Y * (h.getPercentage().get() - ModelHumidity.MIN));
 
             return 1;
         } catch (NullPointerException e) {
@@ -143,13 +143,13 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
             int count = 0;
 
             for (Object hx : function) {
-                ((Humidity) hx).x = (int) (HOUR_X * ((Humidity) hx).getDate().getHour() + CARTESIAN_X);
-                ((Humidity) hx).y = jPanel.getHeight() - (int) (PERCENTAGE_Y * (((Humidity) hx).getPercentage().get() - Humidity.MIN));
-                prom += (float) (((Humidity) (hx)).y);
+                ((ModelHumidity) hx).x = (int) (HOUR_X * ((ModelHumidity) hx).getDate().getHour() + CARTESIAN_X);
+                ((ModelHumidity) hx).y = jPanel.getHeight() - (int) (PERCENTAGE_Y * (((ModelHumidity) hx).getPercentage().get() - ModelHumidity.MIN));
+                prom += (float) (((ModelHumidity) (hx)).y);
                 count++;
             }
             for (Object hx : function) {
-                ((Humidity) hx).y = (int) (prom / count);
+                ((ModelHumidity) hx).y = (int) (prom / count);
             }
             return 1;
         } catch (NullPointerException e) {
@@ -160,8 +160,8 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     @Override
     public Integer paintLine(Graphics g, Object object1, Object object2) {
         try {
-            Humidity h1 = (Humidity) object1;
-            Humidity h2 = (Humidity) object2;
+            ModelHumidity h1 = (ModelHumidity) object1;
+            ModelHumidity h2 = (ModelHumidity) object2;
 
             Graphics2D g2d = (Graphics2D) g;
             g2d.setStroke(new BasicStroke(3));
@@ -182,7 +182,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     @Override
     public Integer paintHelpLine(Graphics g, Object object) {
         try {
-            Humidity h = (Humidity) object;
+            ModelHumidity h = (ModelHumidity) object;
 
             Graphics2D g2d = (Graphics2D) g;
             g2d.setStroke(new BasicStroke(1));
@@ -205,11 +205,11 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     @Override
     public Integer paintGraphic(Graphics g) {
         try {
-            Humidity h = (Humidity) CRUDHumedad.getInstance().selectLast();
+            ModelHumidity h = (ModelHumidity) CRUDHumedad.getInstance().selectLast();
             function.add(h);
 
             h.x = (int) (SECOND_X * ACT_SEC + CARTESIAN_X);
-            h.y = jPanel.getHeight() - (int) (PERCENTAGE_Y * (h.getPercentage().get() - Humidity.MIN));
+            h.y = jPanel.getHeight() - (int) (PERCENTAGE_Y * (h.getPercentage().get() - ModelHumidity.MIN));
 
             //SI HEMOS LLEGADO AL BORDE / SI YA HA PASADO EL MINUTO MAXIMO
             if (ACT_MIN > MIN || (ACT_MIN == 0 && MIN == 59)) {
@@ -231,8 +231,8 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
     @Override
     public Integer paintGraphic(Graphics g, ArrayList<Object> function) {
         try {
-            LocalDateTime h0 = ((Humidity) function.get(0)).getDate();
-            LocalDateTime hn = ((Humidity) function.get(function.size() - 1)).getDate();
+            LocalDateTime h0 = ((ModelHumidity) function.get(0)).getDate();
+            LocalDateTime hn = ((ModelHumidity) function.get(function.size() - 1)).getDate();
 
             if (h0.getDayOfMonth() == hn.getDayOfMonth()) {
                 if ((hn.getHour() - h0.getHour()) >= 0 && (hn.getHour() - h0.getHour()) < 6) {

@@ -12,6 +12,7 @@ public final class ViewMenu extends JFrame {
     public JLabel labelGitHub, labelTwitter, labelTierra;
     public JLabel labelButton1, labelButton2;
     public JLabel labelTermometro, labelCelciusFarenheitl;
+    private JLabel labelRangoValores;
     public JTextField jTTemperatura, jTHumedad;
 
     public ViewMenu() {
@@ -58,8 +59,13 @@ public final class ViewMenu extends JFrame {
         labelTermometro.setBounds(100, 140, labelTermometro.getIcon().getIconWidth(), labelTermometro.getIcon().getIconHeight());
         panelMenu.add(labelTermometro);
 
+        labelRangoValores = new JLabel();
+        labelRangoValores.setIcon(new ImageIcon("src/main/resources/Images/termometro/rango de valores.png"));
+        labelRangoValores.setBounds(245, 169, labelRangoValores.getIcon().getIconWidth(), labelRangoValores.getIcon().getIconHeight());
+        panelMenu.add(labelRangoValores);
+
         labelCelciusFarenheitl = new JLabel("°C");
-        labelCelciusFarenheitl.setBounds(350, 300, 48, 48);
+        labelCelciusFarenheitl.setBounds(335, 300, 48, 48);
         labelCelciusFarenheitl.setFont(fontPrincipal);
         labelCelciusFarenheitl.setCursor(new Cursor(Cursor.HAND_CURSOR));
         panelMenu.add(labelCelciusFarenheitl);
@@ -102,13 +108,13 @@ public final class ViewMenu extends JFrame {
 
     public void createJtextFields() {
         jTTemperatura = new JTextField();
-        jTTemperatura.setText("30.0");
+        jTTemperatura.setText("30");
         jTTemperatura.setFont(fontPrincipal);
         jTTemperatura.setOpaque(false);
         jTTemperatura.setBorder(null);
         jTTemperatura.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        //jTTemperatura.setFocusable(false);
-        jTTemperatura.setBounds(270, 300, 84, 48);
+        jTTemperatura.setFocusable(false);
+        jTTemperatura.setBounds(292, 300, 48, 48);
 
         panelMenu.add(jTTemperatura);
 
@@ -119,7 +125,7 @@ public final class ViewMenu extends JFrame {
         jTHumedad.setBorder(null);
         jTHumedad.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         jTHumedad.setFocusable(false);
-        jTHumedad.setBounds(275, 350, 130, 32);
+        jTHumedad.setBounds(295, 350, 130, 32);
         panelMenu.add(jTHumedad);
     }
 
