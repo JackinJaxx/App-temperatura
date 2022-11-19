@@ -9,21 +9,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <exec.mainClass>com.sensor.app.App</exec.mainClass>
+        <exec.mainClass>com.sensor.App</exec.mainClass>
     </properties>
-    
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
     
     <dependencies>
         <dependency>
             <groupId>com.github.PanamaHitek</groupId>
             <artifactId>PanamaHitek_Arduino</artifactId>
-            <version>3.2.0</version>
+            <version>3.0.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
         <dependency>
@@ -59,6 +52,13 @@
             <version>2.9.4</version>
         </dependency>
     </dependencies>
+    
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
     <build> 
         <resources>
             <resource>

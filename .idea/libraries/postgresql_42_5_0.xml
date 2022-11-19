@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="postgresql-42.5.0">
+    <CLASSES>
+      <root url="jar://$APPLICATION_CONFIG_DIR$/jdbc-drivers/PostgreSQL/42.5.0/org/postgresql/postgresql/42.5.0/postgresql-42.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
