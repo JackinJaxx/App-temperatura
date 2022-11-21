@@ -17,14 +17,17 @@ import java.util.Date;
 
 public class ViewRegistro extends JFrame {
     private JPanel panelTabla, panelHeader;
-    private JLabel jlabelHeader, jlabelIconRegistros, jlabelTabla, jlabelGraficar;
-    private JLabel jlabelOpFecha, jlabelOpHora, jlabelOpCambiar,jlabelTemperatura,jlabelHumedad;
-    private JTable table;
+    private JLabel jlabelHeader, jlabelIconRegistros, jlabelTabla;
+    public JLabel jlabelGraficar;
+    private JLabel jlabelOpFecha, jlabelOpHora;
+    public JLabel jlabelOpCambiar;
+    public JLabel jlabelTemperatura,jlabelHumedad;
+    public JTable table;
     private final LocalDate fecha; //Fecha actual
     private final LocalTime hora; //Hora actual
     private final Date fecha2;//fecha para mostrar al principio del JDateChooser
-    private JCalendar jCalendar1;
-    private JComboBox<String> jComboBox1;
+    public JCalendar jCalendar1;
+    public JComboBox<String> jComboBox1;
 
     public ViewRegistro() {
         setTitle("Registros");
@@ -47,22 +50,6 @@ public class ViewRegistro extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         setVisible(true);
-    }
-
-    public JCalendar getjCalendar1() {
-        return jCalendar1;
-    }
-
-    public void setjCalendar1(JCalendar jCalendar1) {
-        this.jCalendar1 = jCalendar1;
-    }
-
-    public JComboBox<String> getjComboBox1() {
-        return jComboBox1;
-    }
-
-    public void setjComboBox1(JComboBox<String> jComboBox1) {
-        this.jComboBox1 = jComboBox1;
     }
 
     public void createJCalendar() {
@@ -215,19 +202,6 @@ public class ViewRegistro extends JFrame {
             public void mouseExited(MouseEvent e) {
                 jlabelOpCambiar.setIcon(new ImageIcon("src/main/resources/Images/Registros/opciones.png"));
             }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                jlabelOpCambiar.setIcon(new ImageIcon("src/main/resources/Images/Registros/opciones_click.png"));
-                if(jlabelTemperatura.isVisible()){
-                    jlabelTemperatura.setVisible(false);
-                    jlabelHumedad.setVisible(true);
-                }else {
-                    jlabelHumedad.setVisible(false);
-                    jlabelTemperatura.setVisible(true);
-
-                }
-            }
         });
         jlabelTabla.add(jlabelOpCambiar);
     }
@@ -270,13 +244,6 @@ public class ViewRegistro extends JFrame {
         scrollPane.setViewportView(table);
 
         jlabelTabla.add(scrollPane);
-
-
-        DefaultTableModel tabla1 = (DefaultTableModel) table.getModel();
-        tabla1.setRowCount(0);
-        for (int i = 0; i < 28; i++) {
-            tabla1.addRow(new Object[]{i, "2020-12-12", "12:12:12", "12/12"});
-        }
 
     }
 

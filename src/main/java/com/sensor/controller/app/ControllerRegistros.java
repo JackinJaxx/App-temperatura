@@ -4,11 +4,12 @@ import com.sensor.controller.graphics.ControllerGraphics;
 import com.sensor.model.app.CRUDS.CRUDHumedad;
 import com.sensor.model.app.CRUDS.CRUDTemperatura;
 import com.sensor.model.app.ModelHumidity;
-import com.sensor.view.app.VistaRegistro;
+import com.sensor.view.app.ViewRegistro;
 import com.sensor.model.app.ModelTemperature;
 import com.sensor.controller.graphics.ControllerHumidity;
 import com.sensor.controller.graphics.ControllerTemperature;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionEvent;
@@ -19,7 +20,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 /**
  * Clase que se encarga de controlar la vista Registros
@@ -34,11 +34,14 @@ public final class ControllerRegistros {
     public static LocalTime horaFin = null;
     public static LocalDate fechaCalendar;
 
-    private final VistaRegistro vistaRegistro;
+    //private final VistaRegistro vistaRegistro;
+    private final ViewRegistro viewRegistro;
     private final CRUDHumedad crudH;
     private final CRUDTemperatura crudT;
-    private final DefaultTableModel tablaT;
-    private final DefaultTableModel tablaH;
+
+    private final DefaultTableModel tmodel;
+    //private final DefaultTableModel tablaT;
+    //private final DefaultTableModel tablaH;
 
     public static Integer controllerGraphic = null;
     private ControllerTemperature viewTemperature;
@@ -48,13 +51,14 @@ public final class ControllerRegistros {
      * Constructor de la clase.Esta instancia la vista Registros
      */
     public ControllerRegistros() {
-        vistaRegistro = new VistaRegistro();
+        //vistaRegistro = new VistaRegistro();
+        viewRegistro = new ViewRegistro();
         crudH = CRUDHumedad.getInstance();
         crudT = CRUDTemperatura.getInstance();
-        tablaT = (DefaultTableModel) vistaRegistro.jTable1.getModel();
-        tablaH = (DefaultTableModel) vistaRegistro.jTable3.getModel();
-        fechaCalendar = vistaRegistro.getjDateChooser1().getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-
+        tmodel = (DefaultTableModel) viewRegistro.table.getModel();
+        //tablaT = (DefaultTableModel) vistaRegistro.jTable1.getModel();
+        //tablaH = (DefaultTableModel) vistaRegistro.jTable3.getModel();
+        fechaCalendar = viewRegistro.jCalendar1.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
         //setFond();
         events();
     }
@@ -78,11 +82,12 @@ public final class ControllerRegistros {
      */
     public void showView() {
         new Thread(() -> {
-            vistaRegistro.setVisible(true);
-            while (vistaRegistro.isVisible()) {
+            viewRegistro.setVisible(true);
+            while (viewRegistro.isVisible()) {
 
                 //vistaRegistro.repaint();
-                agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
+                agregarDatosTabla(viewRegistro.jComboBox1.getSelectedItem().toString());
+
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
@@ -113,43 +118,55 @@ public final class ControllerRegistros {
             horaInicio = null;
             horaFin = null;
         }
-        tablaT.setRowCount(0);
+
         //fechaCalendar = vistaRegistro.getjDateChooser1().getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-        for (Object modelo : crudT.selectAll()) {
-            ModelTemperature t = (ModelTemperature) modelo;
-            if (bandera) {
-                if (t.getDate().toLocalDate().equals(fechaCalendar)) {
-                    tablaT.addRow(new Object[]{
-                        t.getDate().getYear() + " / " + t.getDate().getDayOfMonth() + " / " + t.getDate().getDayOfMonth(),
-                        t.getDate().getHour() + ":" + t.getDate().getMinute() + ":" + t.getDate().getSecond(),
-                        t.getCelsius()
+        if(viewRegistro.jlabelTemperatura.isVisible()){
+            tmodel.setRowCount(0);
+            int i = 1;
+            for (Object modelo : crudT.selectAll()) {
+                ModelTemperature t = (ModelTemperature) modelo;
+                if (bandera) {
+                    if (t.getDate().toLocalDate().equals(fechaCalendar)) {
+                        tmodel.addRow(new Object[]{
+                                i,
+                                t.getDate().getYear() + " / " + t.getDate().getDayOfMonth() + " / " + t.getDate().getDayOfMonth(),
+                                t.getDate().getHour() + ":" + t.getDate().getMinute() + ":" + t.getDate().getSecond(),
+                                t.getCelsius()
+                        });
+                    }
+                } else if (t.getDate().toLocalDate().equals(fechaCalendar) && (t.getDate().toLocalTime().isAfter(horaInicio) && t.getDate().toLocalTime().isBefore(horaFin))) {
+                    tmodel.addRow(new Object[]{
+                            i,
+                            t.getDate().getYear() + " / " + t.getDate().getDayOfMonth() + " / " + t.getDate().getDayOfMonth(),
+                            t.getDate().getHour() + ":" + t.getDate().getMinute() + ":" + t.getDate().getSecond(),
+                            t.getCelsius()
                     });
                 }
-            } else if (t.getDate().toLocalDate().equals(fechaCalendar) && (t.getDate().toLocalTime().isAfter(horaInicio) && t.getDate().toLocalTime().isBefore(horaFin))) {
-                tablaT.addRow(new Object[]{
-                    t.getDate().getYear() + " / " + t.getDate().getDayOfMonth() + " / " + t.getDate().getDayOfMonth(),
-                    t.getDate().getHour() + ":" + t.getDate().getMinute() + ":" + t.getDate().getSecond(),
-                    t.getCelsius()
-                });
+                i++;
             }
-        }
-        tablaH.setRowCount(0);
-        for (Object modelo : crudH.selectAll()) {
-            ModelHumidity h = (ModelHumidity) modelo;
-            if (bandera) {
-                if (h.getDate().toLocalDate().equals(fechaCalendar)) {
-                    tablaH.addRow(new Object[]{
-                        h.getDate().getYear() + " / " + h.getDate().getDayOfMonth() + " / " + h.getDate().getDayOfMonth(),
-                        h.getDate().getHour() + ":" + h.getDate().getMinute() + ":" + h.getDate().getSecond(),
-                        h.getPercentage()
+        }else{
+            tmodel.setRowCount(0);
+            int i =1;
+            for (Object modelo : crudH.selectAll()) {
+                ModelHumidity h = (ModelHumidity) modelo;
+                if (bandera) {
+                    if (h.getDate().toLocalDate().equals(fechaCalendar)) {
+                        tmodel.addRow(new Object[]{
+                                i,
+                                h.getDate().getYear() + " / " + h.getDate().getDayOfMonth() + " / " + h.getDate().getDayOfMonth(),
+                                h.getDate().getHour() + ":" + h.getDate().getMinute() + ":" + h.getDate().getSecond(),
+                                h.getPercentage()
+                        });
+                    }
+                } else if (h.getDate().toLocalDate().equals(fechaCalendar) && (h.getDate().toLocalTime().isAfter(horaInicio) && h.getDate().toLocalTime().isBefore(horaFin))) {
+                    tmodel.addRow(new Object[]{
+                            i,
+                            h.getDate().getYear() + " / " + h.getDate().getDayOfMonth() + " / " + h.getDate().getDayOfMonth(),
+                            h.getDate().getHour() + ":" + h.getDate().getMinute() + ":" + h.getDate().getSecond(),
+                            h.getPercentage()
                     });
                 }
-            } else if (h.getDate().toLocalDate().equals(fechaCalendar) && (h.getDate().toLocalTime().isAfter(horaInicio) && h.getDate().toLocalTime().isBefore(horaFin))) {
-                tablaH.addRow(new Object[]{
-                    h.getDate().getYear() + " / " + h.getDate().getDayOfMonth() + " / " + h.getDate().getDayOfMonth(),
-                    h.getDate().getHour() + ":" + h.getDate().getMinute() + ":" + h.getDate().getSecond(),
-                    h.getPercentage()
-                });
+                i++;
             }
         }
     }
@@ -159,15 +176,40 @@ public final class ControllerRegistros {
      * vista Registros
      */
     public void events() {
-        vistaRegistro.getjDateChooser1().getDateEditor().addPropertyChangeListener((PropertyChangeEvent evt) -> {
-            if ("date".equals(evt.getPropertyName())) {
-                fechaCalendar = vistaRegistro.getjDateChooser1().getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-                agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
+        viewRegistro.jCalendar1.addPropertyChangeListener((PropertyChangeEvent evt) -> {
+            if ("calendar".equals(evt.getPropertyName())) {
+                fechaCalendar = viewRegistro.jCalendar1.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+
+                agregarDatosTabla(viewRegistro.jComboBox1.getSelectedItem().toString());
                 //JOptionPane.showMessageDialog(vistaRegistro, "AQUI ta la fecha " + fechaCalendar);
             }
         });
 
-        vistaRegistro.jButton1.addMouseListener(new MouseAdapter() {
+        viewRegistro.jlabelOpCambiar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                viewRegistro.jlabelOpCambiar.setIcon(new ImageIcon("src/main/resources/Images/Registros/opciones_click.png"));
+
+                if(viewRegistro.jlabelTemperatura.isVisible()){
+                    controllerGraphic = 0;
+                    ControllerGraphics.jFrame.setVisible(false);
+
+
+                    viewRegistro.jlabelTemperatura.setVisible(false);
+                    viewRegistro.jlabelHumedad.setVisible(true);
+                    agregarDatosTabla(viewRegistro.jComboBox1.getSelectedItem().toString());
+                }else{
+                    controllerGraphic = 1;
+                    ControllerGraphics.jFrame.setVisible(false);
+
+
+                    viewRegistro.jlabelHumedad.setVisible(false);
+                    viewRegistro.jlabelTemperatura.setVisible(true);
+                    agregarDatosTabla(viewRegistro.jComboBox1.getSelectedItem().toString());
+                }
+            }
+        });
+        viewRegistro.jlabelGraficar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent ev) {
                 try {
@@ -190,33 +232,11 @@ public final class ControllerRegistros {
                     }
                 } catch (NullPointerException e) {
                     System.out.println(e);
-                    JOptionPane.showMessageDialog(vistaRegistro, "NO HAY DATOS QUE LEER SIN LA BASE DE DATOS");
+                    JOptionPane.showMessageDialog(viewRegistro, "NO HAY DATOS QUE LEER SIN LA BASE DE DATOS");
                 }
 
             }
         });
-        vistaRegistro.getjComboBox1().addActionListener((ActionEvent e) -> {
-            agregarDatosTabla(vistaRegistro.getjComboBox1().getSelectedItem().toString());
-        });
-        vistaRegistro.jButton2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent ev) {
-                try {
-                    if (controllerGraphic == null || controllerGraphic == 1) {
-                        controllerGraphic = 0;
-                        vistaRegistro.jButton2.setText("CAMBIAR A TEMPERATURA");
-                        ControllerGraphics.jFrame.setVisible(false);
-                        
-                    } else {
-                        controllerGraphic = 1;
-                        vistaRegistro.jButton2.setText("CAMBIAR A HUMEDAD");
-                        ControllerGraphics.jFrame.setVisible(false);
-                        
-                    }
-                } catch (NullPointerException ex) {
-                    System.out.println("Hay pedillos");
-                }
-            }
-        });
+        viewRegistro.jComboBox1.addActionListener((ActionEvent e) -> agregarDatosTabla(viewRegistro.jComboBox1.getSelectedItem().toString()));
     }
 }
