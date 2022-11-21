@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.github.PanamaHitek</groupId>
             <artifactId>PanamaHitek_Arduino</artifactId>
-            <version>3.0.0</version>
+            <version>3.2.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
         <dependency>

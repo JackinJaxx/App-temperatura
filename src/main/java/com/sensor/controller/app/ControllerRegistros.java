@@ -166,6 +166,7 @@ public final class ControllerRegistros {
                 //JOptionPane.showMessageDialog(vistaRegistro, "AQUI ta la fecha " + fechaCalendar);
             }
         });
+
         vistaRegistro.jButton1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent ev) {

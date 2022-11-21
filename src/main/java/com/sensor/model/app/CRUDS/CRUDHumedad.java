@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * @version 1.0
  * @author KevinCyndaquil, JackinJaxx, Wuicho24
  */
-public class CRUDHumedad implements Select, Insert {
+public class    CRUDHumedad implements Select, Insert {
 
     private static CRUDHumedad instance;
     private final ConnectDB connectDB;

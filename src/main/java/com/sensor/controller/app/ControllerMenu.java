@@ -1,6 +1,7 @@
 package com.sensor.controller.app;
 
 import static com.sensor.controller.app.ControllerRegistros.controllerGraphic;
+
 import com.sensor.model.app.CRUDS.CRUDHumedad;
 import com.sensor.model.app.CRUDS.CRUDTemperatura;
 import com.sensor.model.app.CRUDS.ReadArduino;
@@ -30,7 +31,7 @@ public final class ControllerMenu {
     private ControllerRegistros controllerRegistros;
     private ControllerTemperature viewTemperature;
     private ControllerHumidity viewHumidity;
-    
+
     /**
      * Constructor de la clase.Esta instancia la vista del menu
      *
@@ -65,24 +66,24 @@ public final class ControllerMenu {
             j++;
         }
 
-        //esto pasa cada 2 segundos
+        //esto pasa cada 1 segundo
         Timer timer = new Timer(1000, e -> {
             ModelTemperature t;
-            float temperatura;
+            int temperatura;
             ModelHumidity h;
-            float humedad;
+            int humedad;
 
             try {
                 t = (ModelTemperature) crudT.selectLast();
-                temperatura = t.getCelsius();
+                temperatura = Math.round(t.getCelsius());
                 h = (ModelHumidity) crudH.selectLast();
-                humedad = h.getPercentage().get();
+                humedad = Math.round(h.getPercentage().get());
             } catch (NullPointerException ex) {
                 temperatura = 0;
                 humedad = 0;
             }
 
-            viewMenu.jTTemperatura.setText(String.valueOf(Math.round(temperatura)));
+            viewMenu.jTTemperatura.setText(String.valueOf(temperatura));
             viewMenu.jTHumedad.setText("Humedad: " + humedad + "%");
 
             if (!(temperatura % 2 == 0)) {
@@ -113,7 +114,7 @@ public final class ControllerMenu {
         viewMenu.labelGitHub.addMouseListener(new MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 try {
-                    java.awt.Desktop.getDesktop().browse(java.net.URI.create("https://github.com/jackinjaxx"));
+                    java.awt.Desktop.getDesktop().browse(java.net.URI.create("https://github.com/JackinJaxx/App-temperatura"));
                 } catch (java.io.IOException e) {
                     System.out.println(e.getMessage());
                 }
@@ -123,7 +124,7 @@ public final class ControllerMenu {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 try {
-                    java.awt.Desktop.getDesktop().browse(java.net.URI.create("https://twitter.com/jackinjaxx01"));
+                    java.awt.Desktop.getDesktop().browse(java.net.URI.create("https://twitter.com"));
                 } catch (java.io.IOException e) {
                     System.out.println(e.getMessage());
                 }
@@ -150,13 +151,15 @@ public final class ControllerMenu {
             public void mouseReleased(MouseEvent e) {
                 viewMenu.labelButton1.setIcon(new ImageIcon("src/main/resources/Images/buttonMenuPush.png"));
 
-                try {
+                if (ReadArduino.getInstance().selectAll().get(0) == null || ReadArduino.getInstance().selectAll().get(1) == null) {
+                    JOptionPane.showMessageDialog(viewMenu, "NO HAY DATOS QUE LEER SIN EL ARDUINO");
+                } else {
                     if (controllerGraphic == null || controllerGraphic == 1) {
 
                         if (viewTemperature == null) {
                             viewTemperature = new ControllerTemperature();
                         }
-                        
+
                         viewTemperature.throwJFrame();
                         viewTemperature.throwJPanel();
                         viewTemperature.start();
@@ -165,15 +168,12 @@ public final class ControllerMenu {
                         if (viewHumidity == null) {
                             viewHumidity = new ControllerHumidity();
                         }
-                        
+
                         viewHumidity.throwJFrame();
                         viewHumidity.throwJPanel();
                         viewHumidity.start();
                     }
-                } catch (NullPointerException ex) {
-                    JOptionPane.showMessageDialog(viewMenu, "NO HAY DATOS QUE LEER SIN EL ARDUINO");
                 }
-
             }
 
             @Override

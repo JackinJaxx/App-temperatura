@@ -52,7 +52,7 @@ public class HiloConnectArduinoDB extends Thread {
     @Override
     public void run() {
         try {
-            Thread.sleep(2000); /*Se espera 1 segundos para que se conecte el arduino y el sensor recopile los datos
+            Thread.sleep(2000); /*Se espera 2 segundos para que se conecte el arduino y el sensor recopile los datos
                                         ya que el sensor no recopila al instante*/
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
