@@ -66,7 +66,7 @@ public class ViewRegistro extends JFrame {
 
     public void createJRangoHora(){
         jComboBox1 = new JComboBox<>();
-        jComboBox1.setModel(new DefaultComboBoxModel<>(new String[] { "Todos", "00:00 a 06:00", "06:00 a 12:00", "12:00 a 18:00", "18:00 a 24:00" }) );
+        jComboBox1.setModel(new DefaultComboBoxModel<>(new String[] { "Todos", "00:00 a 06:00", "06:00 a 12:00", "12:00 a 18:00", "18:00 a 23:59" }) );
         jComboBox1.setBounds(417, 60, 233, 20);
         jComboBox1.setVisible(false);
         jComboBox1.addActionListener(evt -> {

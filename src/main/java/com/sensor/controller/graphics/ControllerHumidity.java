@@ -152,7 +152,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
                     LocalTime h2 = ControllerRegistros.horaInicio.plusMinutes(min);
 
                     if (h.getDate().toLocalTime().isAfter(h1)) {
-                        if (h.getDate().toLocalTime().isBefore(h2)) {
+                        if (h.getDate().toLocalTime().isBefore(h2) || h.getDate().toLocalTime().equals(h2)) {
                             int prom = CRUDHumedad.getInstance().getAverage(fechaCalendar, h1, h2);
 
                             h.x = Math.round(RANGE_X * (min / 15) + CARTESIAN_X);
@@ -161,7 +161,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
 
                             break;
                         } else {
-                            if (h2.isBefore(horaFin)) {
+                            if (h2.isBefore(horaFin) || h2.equals(horaFin)) {
                                 min += 15;
                             } else {
                                 h.x = null;
@@ -178,6 +178,12 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
                     }
                 }
             }
+
+            function.stream().forEach((obj) -> {
+                ModelHumidity h = (ModelHumidity) obj;
+                System.out.println(h.getDate().toLocalTime() + ", " + h.getPercentage().get() + ", " + h.x + ", " + h.y);
+            });
+
             return 1;
         } catch (NullPointerException e) {
             return null;
@@ -200,7 +206,7 @@ public class ControllerHumidity extends ControllerGraphics implements CatalogGra
                             int prom = CRUDHumedad.getInstance().getAverage(fechaCalendar, hour, hour.plusHours(1));
 
                             h.x = Math.round(HOUR_X * hours) + CARTESIAN_X;
-                            h.y = Math.round(PERCENTAGE_Y * prom - ModelHumidity.MIN);
+                            h.y = jPanel.getHeight() - Math.round(PERCENTAGE_Y * (prom - ModelHumidity.MIN));
 
                             break;
                         } else {

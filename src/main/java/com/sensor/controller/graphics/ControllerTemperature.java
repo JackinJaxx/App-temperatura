@@ -148,7 +148,7 @@ public class ControllerTemperature extends ControllerGraphics implements Catalog
                     LocalTime h2 = ControllerRegistros.horaInicio.plusMinutes(min);
 
                     if (t.getDate().toLocalTime().isAfter(h1)) {
-                        if (t.getDate().toLocalTime().isBefore(h2)) {
+                        if (t.getDate().toLocalTime().isBefore(h2) || t.getDate().toLocalTime().equals(h2)) {
                             int prom = CRUDTemperatura.getInstance().getAverage(fechaCalendar, h1, h2);
 
                             t.x = Math.round(RANGE_X * (min / 15) + CARTESIAN_X);
@@ -157,7 +157,7 @@ public class ControllerTemperature extends ControllerGraphics implements Catalog
 
                             break;
                         } else {
-                            if (h2.isBefore(horaFin)) {
+                            if (h2.isBefore(horaFin) || h2.equals(horaFin)) {
                                 min += 15;
                             } else {
                                 t.x = null;
@@ -196,7 +196,7 @@ public class ControllerTemperature extends ControllerGraphics implements Catalog
                             int prom = CRUDTemperatura.getInstance().getAverage(fechaCalendar, hour, hour.plusHours(1));
 
                             t.x = Math.round(HOUR_X * hours) + CARTESIAN_X;
-                            t.y = Math.round(CELSIUS_Y * prom - ModelTemperature.MIN);
+                            t.y = jPanel.getHeight() - Math.round(CELSIUS_Y * (prom - ModelTemperature.MIN));
                             System.out.println(prom);
                             break;
                         } else {

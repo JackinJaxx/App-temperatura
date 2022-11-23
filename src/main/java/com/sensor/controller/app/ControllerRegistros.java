@@ -147,6 +147,7 @@ public final class ControllerRegistros {
         }else{
             tmodel.setRowCount(0);
             int i =1;
+
             for (Object modelo : crudH.selectAll()) {
                 ModelHumidity h = (ModelHumidity) modelo;
                 if (bandera) {
@@ -191,20 +192,30 @@ public final class ControllerRegistros {
                 viewRegistro.jlabelOpCambiar.setIcon(new ImageIcon("src/main/resources/Images/Registros/opciones_click.png"));
 
                 if(viewRegistro.jlabelTemperatura.isVisible()){
-                    controllerGraphic = 0;
-                    ControllerGraphics.jFrame.setVisible(false);
-
-
                     viewRegistro.jlabelTemperatura.setVisible(false);
                     viewRegistro.jlabelHumedad.setVisible(true);
+
+                    controllerGraphic = 0;
+                    try {
+                        ControllerGraphics.jFrame.setVisible(false);
+                    }catch (NullPointerException ex) {
+                        System.out.println("Aun no se pulsa el boton graficar");
+                    }
+
                     agregarDatosTabla(viewRegistro.jComboBox1.getSelectedItem().toString());
                 }else{
-                    controllerGraphic = 1;
-                    ControllerGraphics.jFrame.setVisible(false);
 
 
                     viewRegistro.jlabelHumedad.setVisible(false);
                     viewRegistro.jlabelTemperatura.setVisible(true);
+                    controllerGraphic = 1;
+                    try {
+                        ControllerGraphics.jFrame.setVisible(false);
+                    }catch (NullPointerException ex) {
+                        System.out.println("Aun no se pulsa el boton graficar");
+                    }
+
+
                     agregarDatosTabla(viewRegistro.jComboBox1.getSelectedItem().toString());
                 }
             }
